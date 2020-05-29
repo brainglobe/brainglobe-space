@@ -1,4 +1,26 @@
 import numpy as np
+from bgspace.utils import ordered_list_from_set
+
+
+def space_conv_input(method):
+    """Decorator for bypassing SpaceConvention creation.
+    Parameters
+    ----------
+    method :
+        Must accepting SpaceConvention input
+
+    """
+
+    def inner(spacecov_instance, space_description, *args, **kwargs):
+
+        # isinstance(..., SpaceConvention) here would fail, so:
+        if not type(space_description) == type(spacecov_instance):
+            # Generate description if input was not:
+            space_description = SpaceConvention(space_description)
+
+        return method(spacecov_instance, space_description, *args, **kwargs)
+
+    return inner
 
 
 class SpaceConvention:
@@ -85,8 +107,16 @@ class SpaceConvention:
         # Univoke description of the space convention with a tuple of axes lims:
         self.axes_description = tuple(axs_description)
 
-        self.shape = shape
+        self._shape = shape
         self.resolution = resolution
+
+    @property
+    def shape(self):
+        if self._shape[0] is None:
+            raise TypeError(
+                "You are trying to use the space shape, but none was specified!"
+            )
+        return self._shape
 
     @property
     def axes_order(self):
@@ -114,13 +144,14 @@ class SpaceConvention:
         """
         return tuple([lim[0] for lim in self.axes_description])
 
+    @space_conv_input
     def map_to(self, target):
         """Find axes reordering and flips required to go to
         target space convention.
 
         Parameters
         ----------
-        target : SpaceConvention object
+        target : SpaceConvention object or valid origin
             Target space convention.
 
         Returns
@@ -131,6 +162,7 @@ class SpaceConvention:
             Sequence of flips to move to target space (in target axis order).
 
         """
+
         # Get order of matching axes:
         order = tuple([self.axes_order.index(ax) for ax in target.axes_order])
 
@@ -144,12 +176,13 @@ class SpaceConvention:
 
         return order, flips
 
-    def map_stack_to(self, stack, target, copy=False):
+    @space_conv_input
+    def map_stack_to(self, target, stack, copy=False):
         """Transpose and flip stack to move it to target space convention.
-        stack : numpy array
-            Stack to map from space convention a to space convention b
         target : SpaceConvention object
             Target space convention.
+        stack : numpy array
+            Stack to map from space convention a to space convention b
         copy : bool, optional
             If true, stack is copied.
 
@@ -173,6 +206,7 @@ class SpaceConvention:
 
         return stack
 
+    @space_conv_input
     def transformation_matrix_to(self, target):
         """Find transformation matrix going to target space convention.
         Parameters
@@ -185,43 +219,40 @@ class SpaceConvention:
 
         """
 
-        # Find axorder swapping and flips:
+        # Find axes order and flips:
         order, flips = self.map_to(target)
 
+        # Instantiate transformation matrix:
         transformation_mat = np.zeros((4, 4))
         transformation_mat[-1, -1] = 1
+
+        # Fill it in the required places:
         for ai, (bi, f) in enumerate(zip(order, flips)):
             transformation_mat[ai, bi] = -1 if f else 1
 
-            transformation_mat[ai, 3] = self.shape[ai] if f else 0
+            # If flipping is necessary, we also need to translate origin:
+            transformation_mat[ai, 3] = self.shape[bi] if f else 0
 
         return transformation_mat
 
-    def map_points_to(self, pts, target):
+    @space_conv_input
+    def map_points_to(self, target, pts):
         """Map points to target space convention.
         Parameters
         ----------
-        pts : (n, 3) numpy array with the points to be mapped.
         target : SpaceConvention object
             Target space convention.
+        pts : (n, 3) numpy array
+            Array with the points to be mapped.
 
         Returns
         -------
-
+        (n, 3) numpy array
+            Array with the transformed points.
         """
+        transformation_mat = self.transformation_matrix_to(target)
 
+        # A column of zeros is required for the matrix multiplication:
+        pts_to_transform = np.insert(pts, 3, np.ones(pts.shape[0]), axis=1)
 
-def ordered_list_from_set(input_set, first):
-    """
-    Parameters
-    ----------
-    input_set : set
-        2-elements set
-    first :
-        First element for the output list
-
-    Returns
-    -------
-
-    """
-    return first + next(iter(input_set - {first}))
+        return (transformation_mat @ pts_to_transform.T).T[:, :3]

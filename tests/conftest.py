@@ -8,4 +8,4 @@ def valid_origins():
 
 @pytest.fixture
 def some_shapes():
-    return [(1, 1, 1), (15, 5, 10)]
+    return [(3, 3, 3), (15, 5, 10)]

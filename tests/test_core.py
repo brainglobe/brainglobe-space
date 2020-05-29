@@ -1,35 +1,10 @@
-import pytest
-import numpy as np
 import itertools
+import numpy as np
 
+import pytest
+
+from .utils import create_label_array
 from bgspace import SpaceConvention
-
-char_add = np.core.defchararray.add
-
-
-def create_label_array(origin, half_shape):
-    """Create stack with string labels marking regions for testing
-    Parameters
-    ----------
-    origin : str
-        Valid origin for a SpaceConvention obj.
-    half_shape : tuple
-        Half shape of the stack on each axis.
-
-    Returns
-    -------
-    np.array of chars
-        array with elements describing an anatomical location (e.g. "als", "pir)
-
-    """
-    space = SpaceConvention(origin)
-    arrays = []
-    for lims, hs in zip(space.axes_description, half_shape):
-        arrays.append(np.array([lims[0],] * hs + [lims[1],] * hs))
-
-    x, y, z = np.meshgrid(*arrays, indexing="ij")
-
-    return char_add(char_add(x, y), z)
 
 
 @pytest.mark.parametrize(
@@ -88,9 +63,46 @@ def test_stack_flips(valid_origins, some_shapes):
         target_stack = create_label_array(tgt_o, tgt_shape)
 
         source_space = SpaceConvention(src_o)
-        target_space = SpaceConvention(tgt_o)
 
-        # Check all corners of the mapped stack:
-        mapped_stack = source_space.map_stack_to(source_stack, target_space)
-        for indexes in itertools.product([0, -1], repeat=3):
-            assert set(mapped_stack[indexes]) == set(target_stack[indexes])
+        # Test both mapping to SpaceConvention obj and origin with decorator:
+        for target_space in [tgt_o, SpaceConvention(tgt_o)]:
+            # Check all corners of the mapped stack:
+            mapped_stack = source_space.map_stack_to(
+                target_space, source_stack
+            )
+            for indexes in itertools.product([0, -1], repeat=3):
+                assert set(mapped_stack[indexes]) == set(target_stack[indexes])
+
+
+# define some conditions to be cross_checked:
+def test_point_transform(valid_origins, some_shapes):
+
+    for (src_o, tgt_o, src_shape, tgt_shape) in itertools.product(
+        valid_origins, valid_origins, some_shapes, some_shapes
+    ):
+        # Create an array with descriptive space labels:
+        source_stack = create_label_array(src_o, src_shape)
+
+        # Create spaces objects:
+        source_space = SpaceConvention(src_o, shape=[s * 2 for s in src_shape])
+
+        # Test both mapping to SpaceConvention obj and origin with decorator:
+        for target_space in [tgt_o, SpaceConvention(tgt_o)]:
+
+            # Define grid of points sampling 4 points per axis:
+            grid_positions = [[1, s - 1, s + 1, s * 2 - 1] for s in src_shape]
+            source_pts = np.array(list(itertools.product(*grid_positions)))
+
+            # Map points and stack to target space:
+            mapped_pts = source_space.map_points_to(target_space, source_pts)
+            mapped_stack = source_space.map_stack_to(
+                target_space, source_stack
+            )
+
+            # Check that point coordinates keep the same values:
+            for p_source, p_mapped in zip(source_pts, mapped_pts):
+                p_s, p_m = [
+                    tuple(p.astype(np.int)) for p in [p_source, p_mapped]
+                ]
+
+                assert source_stack[p_s] == mapped_stack[p_m]
