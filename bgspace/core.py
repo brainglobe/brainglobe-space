@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class SpaceConvention:
     """Class for describing an anatomical 3D space convention.
     Drops the infinitely confusing (x, y, z) for a more semantic specification
@@ -30,16 +33,16 @@ class SpaceConvention:
     Parameters
     ----------
     origin : str or tuple of str or list of str
-        each letter or initial of each string should match a letter in s
+        Each letter or initial of each string should match a letter in s
         pace_specs
     shape : tuple, optional
-        shape of the bounding box of the space (e.g. shape of a stack)
+        Shape of the bounding box of the space (e.g. shape of a stack)
     """
 
     # Use sets to avoid any explicit convention definition:
     space_specs = {
         "sagittal": {"p", "a"},
-        "vertical": {"d", "v"},
+        "vertical": {"s", "i"},
         "frontal": {"l", "r"},
     }
 
@@ -47,8 +50,8 @@ class SpaceConvention:
     lims_labels = {
         "p": "Posterior",
         "a": "Anterior",
-        "d": "Dorsal",
-        "v": "Ventral",
+        "s": "Superior",
+        "i": "Inferior",
         "l": "Left",
         "r": "Right",
     }
@@ -72,7 +75,7 @@ class SpaceConvention:
                 if lim in possible_lims:
                     # Define orientation string with set leftout element:
                     axs_description.append(
-                        ordred_list_from_set(possible_lims, lim)
+                        ordered_list_from_set(possible_lims, lim)
                     )
 
         # Makes sure we have a full orientation:
@@ -80,21 +83,21 @@ class SpaceConvention:
         assert len(axs_description) == len(set(axs_description))
 
         # Univoke description of the space convention with a tuple of axes lims:
-        self.axs_description = tuple(axs_description)
+        self.axes_description = tuple(axs_description)
 
         self.shape = shape
         self.resolution = resolution
 
     @property
-    def axs_order(self):
+    def axes_order(self):
         """
         Returns
         -------
         tuple
-            Tuple of  `self.space_specs` keys specifying axes order
+            `self.space_specs` keys specifying axes order.
         """
         order = []
-        for lims in self.axs_description:
+        for lims in self.axes_description:
             order += [
                 k for k, val in self.space_specs.items() if lims[0] in val
             ]
@@ -109,17 +112,113 @@ class SpaceConvention:
         tuple
             Three letters specifying origin position.
         """
-        return tuple([l[0] for l in self.axs_description])
+        return tuple([lim[0] for lim in self.axes_description])
+
+    def map_to(self, target):
+        """Find axes reordering and flips required to go to
+        target space convention.
+
+        Parameters
+        ----------
+        target : SpaceConvention object
+            Target space convention.
+
+        Returns
+        -------
+        tuple
+            Axes order to move to target space.
+        tuple
+            Sequence of flips to move to target space (in target axis order).
+
+        """
+        # Get order of matching axes:
+        order = tuple([self.axes_order.index(ax) for ax in target.axes_order])
+
+        # Detect required flips:
+        flips = tuple(
+            [
+                self.axes_description[si] != target.axes_description[ti]
+                for ti, si in enumerate(order)
+            ]
+        )
+
+        return order, flips
+
+    def map_stack_to(self, stack, target, copy=False):
+        """Transpose and flip stack to move it to target space convention.
+        stack : numpy array
+            Stack to map from space convention a to space convention b
+        target : SpaceConvention object
+            Target space convention.
+        copy : bool, optional
+            If true, stack is copied.
+
+        Returns
+        -------
+
+        """
+
+        # Find order swapping and flips:
+        order, flips = self.map_to(target)
+
+        # If we want to work on a copy, create:
+        if copy:
+            stack = stack.copy()
+
+        # Transpose axes:
+        stack = np.transpose(stack, order)
+
+        # Flip as required:
+        stack = np.flip(stack, [i for i, f in enumerate(flips) if f])
+
+        return stack
+
+    def transformation_matrix_to(self, target):
+        """Find transformation matrix going to target space convention.
+        Parameters
+        ----------
+        target : SpaceConvention object
+            Target space convention.
+
+        Returns
+        -------
+
+        """
+
+        # Find axorder swapping and flips:
+        order, flips = self.map_to(target)
+
+        transformation_mat = np.zeros((4, 4))
+        transformation_mat[-1, -1] = 1
+        for ai, (bi, f) in enumerate(zip(order, flips)):
+            transformation_mat[ai, bi] = -1 if f else 1
+
+            transformation_mat[ai, 3] = self.shape[ai] if f else 0
+
+        return transformation_mat
+
+    def map_points_to(self, pts, target):
+        """Map points to target space convention.
+        Parameters
+        ----------
+        pts : (n, 3) numpy array with the points to be mapped.
+        target : SpaceConvention object
+            Target space convention.
+
+        Returns
+        -------
+
+        """
 
 
-def ordred_list_from_set(input_set, first):
+def ordered_list_from_set(input_set, first):
     """
     Parameters
     ----------
     input_set : set
         2-elements set
     first :
-        first element for the output list
+        First element for the output list
 
     Returns
     -------
