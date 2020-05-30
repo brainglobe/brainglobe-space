@@ -1,5 +1,6 @@
 # BGSpace
 Anatomical space conventions made easy.
+
 [![Python Version](https://img.shields.io/pypi/pyversions/bgspace.svg)](https://pypi.org/project/bgspace)
 [![PyPI](https://img.shields.io/pypi/v/bgspace.svg)](https://pypi.org/project/bgspace)
 [![Build Status](https://travis-ci.com/brainglobe/bgspace.svg?branch=master)](https://travis-ci.com/brainglobe/bgspace)
