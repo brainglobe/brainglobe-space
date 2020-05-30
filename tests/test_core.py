@@ -6,6 +6,9 @@ import pytest
 from .utils import create_label_array
 from bgspace import SpaceConvention
 
+valid_origins = ["asl", "ipl", "pli"]
+some_shapes = [(3, 3, 3), (15, 5, 10)]
+
 
 @pytest.mark.parametrize(
     "origin",
@@ -53,56 +56,69 @@ def test_properties(o, axs_order, origin):
     assert space.origin == origin
 
 
-# define some conditions to be cross_checked:
-def test_stack_flips(valid_origins, some_shapes):
+@pytest.mark.parametrize("valid_origins", ["asl", "sla", "pir"])
+# @pytest.mark.parametrize("target_args, shape", [("asl"), (1, 2, 3)])
+def test_shape_decorator(valid_origins):
+    correct_shape = (20, 30, 10)
+    origin = "asl"
+    source_space = SpaceConvention(origin, correct_shape)
 
-    for (src_o, tgt_o, src_shape, tgt_shape) in itertools.product(
-        valid_origins, valid_origins, some_shapes, some_shapes
-    ):
-        source_stack = create_label_array(src_o, src_shape)
-        target_stack = create_label_array(tgt_o, tgt_shape)
+    target_space = SpaceConvention(origin, correct_shape)
+    correct_mat = source_space.transformation_matrix_to(target_space)
 
-        source_space = SpaceConvention(src_o)
+    # Check if we can overwrite none or different orientations:
+    for args in [(origin, None), (origin, correct_shape[::-1])]:
+        new_shape_mat = SpaceConvention(*args).transformation_matrix_to(
+            target_space, shape=correct_shape
+        )
 
-        # Test both mapping to SpaceConvention obj and origin with decorator:
-        for target_space in [tgt_o, SpaceConvention(tgt_o)]:
-            # Check all corners of the mapped stack:
-            mapped_stack = source_space.map_stack_to(
-                target_space, source_stack
-            )
-            for indexes in itertools.product([0, -1], repeat=3):
-                assert set(mapped_stack[indexes]) == set(target_stack[indexes])
+        assert np.allclose(correct_mat, new_shape_mat)
 
 
 # define some conditions to be cross_checked:
-def test_point_transform(valid_origins, some_shapes):
+@pytest.mark.parametrize("src_o", valid_origins)
+@pytest.mark.parametrize("tgt_o", valid_origins)
+@pytest.mark.parametrize("src_shape", some_shapes)
+@pytest.mark.parametrize("tgt_shape", some_shapes)
+def test_stack_flips(src_o, tgt_o, src_shape, tgt_shape):
+    source_stack = create_label_array(src_o, src_shape)
+    target_stack = create_label_array(tgt_o, tgt_shape)
 
-    for (src_o, tgt_o, src_shape, tgt_shape) in itertools.product(
-        valid_origins, valid_origins, some_shapes, some_shapes
-    ):
-        # Create an array with descriptive space labels:
-        source_stack = create_label_array(src_o, src_shape)
+    source_space = SpaceConvention(src_o)
 
-        # Create spaces objects:
-        source_space = SpaceConvention(src_o, shape=[s * 2 for s in src_shape])
+    # Test both mapping to SpaceConvention obj and origin with decorator:
+    for target_space in [tgt_o, SpaceConvention(tgt_o)]:
+        # Check all corners of the mapped stack:
+        mapped_stack = source_space.map_stack_to(target_space, source_stack)
+        for indexes in itertools.product([0, -1], repeat=3):
+            assert set(mapped_stack[indexes]) == set(target_stack[indexes])
 
-        # Test both mapping to SpaceConvention obj and origin with decorator:
-        for target_space in [tgt_o, SpaceConvention(tgt_o)]:
 
-            # Define grid of points sampling 4 points per axis:
-            grid_positions = [[1, s - 1, s + 1, s * 2 - 1] for s in src_shape]
-            source_pts = np.array(list(itertools.product(*grid_positions)))
+# define some conditions to be cross_checked:
+@pytest.mark.parametrize("src_o", valid_origins)
+@pytest.mark.parametrize("tgt_o", valid_origins)
+@pytest.mark.parametrize("src_shape", some_shapes)
+@pytest.mark.parametrize("tgt_shape", some_shapes)
+def test_point_transform(src_o, tgt_o, src_shape, tgt_shape):
+    # Create an array with descriptive space labels:
+    source_stack = create_label_array(src_o, src_shape)
 
-            # Map points and stack to target space:
-            mapped_pts = source_space.map_points_to(target_space, source_pts)
-            mapped_stack = source_space.map_stack_to(
-                target_space, source_stack
-            )
+    # Create spaces objects:
+    source_space = SpaceConvention(src_o, shape=[s * 2 for s in src_shape])
 
-            # Check that point coordinates keep the same values:
-            for p_source, p_mapped in zip(source_pts, mapped_pts):
-                p_s, p_m = [
-                    tuple(p.astype(np.int)) for p in [p_source, p_mapped]
-                ]
+    # Test both mapping to SpaceConvention obj and origin with decorator:
+    for target_space in [tgt_o, SpaceConvention(tgt_o)]:
 
-                assert source_stack[p_s] == mapped_stack[p_m]
+        # Define grid of points sampling 4 points per axis:
+        grid_positions = [[1, s - 1, s + 1, s * 2 - 1] for s in src_shape]
+        source_pts = np.array(list(itertools.product(*grid_positions)))
+
+        # Map points and stack to target space:
+        mapped_pts = source_space.map_points_to(target_space, source_pts)
+        mapped_stack = source_space.map_stack_to(target_space, source_stack)
+
+        # Check that point coordinates keep the same values:
+        for p_source, p_mapped in zip(source_pts, mapped_pts):
+            p_s, p_m = [tuple(p.astype(np.int)) for p in [p_source, p_mapped]]
+
+            assert source_stack[p_s] == mapped_stack[p_m]

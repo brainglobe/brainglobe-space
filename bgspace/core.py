@@ -2,25 +2,20 @@ import numpy as np
 from bgspace.utils import ordered_list_from_set
 
 
-def space_conv_input(method):
+def to_target(method):
     """Decorator for bypassing SpaceConvention creation.
-    Parameters
-    ----------
-    method :
-        Must accepting SpaceConvention input
-
     """
 
-    def inner(spacecov_instance, space_description, *args, **kwargs):
+    def decorated(spaceconv_instance, space_description, *args, **kwargs):
 
         # isinstance(..., SpaceConvention) here would fail, so:
-        if not type(space_description) == type(spacecov_instance):
+        if not type(space_description) == type(spaceconv_instance):
             # Generate description if input was not:
             space_description = SpaceConvention(space_description)
 
-        return method(spacecov_instance, space_description, *args, **kwargs)
+        return method(spaceconv_instance, space_description, *args, **kwargs)
 
-    return inner
+    return decorated
 
 
 class SpaceConvention:
@@ -78,12 +73,12 @@ class SpaceConvention:
         "r": "Right",
     }
 
-    def __init__(self, origin, shape=(None, None, None), resolution=(1, 1, 1)):
+    def __init__(self, origin, shape=None):
+
+        self.shape = shape
 
         # Reformat to lowercase initial:
         origin = [o[0].lower() for o in origin]
-
-        assert all([o in self.lims_labels.keys() for o in origin])
 
         axs_description = []
 
@@ -106,17 +101,6 @@ class SpaceConvention:
 
         # Univoke description of the space convention with a tuple of axes lims:
         self.axes_description = tuple(axs_description)
-
-        self._shape = shape
-        self.resolution = resolution
-
-    @property
-    def shape(self):
-        if self._shape[0] is None:
-            raise TypeError(
-                "You are trying to use the space shape, but none was specified!"
-            )
-        return self._shape
 
     @property
     def axes_order(self):
@@ -144,7 +128,7 @@ class SpaceConvention:
         """
         return tuple([lim[0] for lim in self.axes_description])
 
-    @space_conv_input
+    @to_target
     def map_to(self, target):
         """Find axes reordering and flips required to go to
         target space convention.
@@ -176,9 +160,12 @@ class SpaceConvention:
 
         return order, flips
 
-    @space_conv_input
+    @to_target
     def map_stack_to(self, target, stack, copy=False):
         """Transpose and flip stack to move it to target space convention.
+
+        Parameters
+        ----------
         target : SpaceConvention object
             Target space convention.
         stack : numpy array
@@ -206,18 +193,22 @@ class SpaceConvention:
 
         return stack
 
-    @space_conv_input
-    def transformation_matrix_to(self, target):
+    @to_target
+    def transformation_matrix_to(self, target, shape=None):
         """Find transformation matrix going to target space convention.
+
         Parameters
         ----------
         target : SpaceConvention object
             Target space convention.
+        shape : tuple, opt
+            Must be passed if the object does not have one specified.
 
         Returns
         -------
 
         """
+        shape = shape if shape is not None else self.shape
 
         # Find axes order and flips:
         order, flips = self.map_to(target)
@@ -231,12 +222,18 @@ class SpaceConvention:
             transformation_mat[ai, bi] = -1 if f else 1
 
             # If flipping is necessary, we also need to translate origin:
-            transformation_mat[ai, 3] = self.shape[bi] if f else 0
+            origin_offset = shape[bi] if f else 0
+
+            if origin_offset is None:
+                raise TypeError(
+                    "A valid shape is required for this trasformation!"
+                )
+            transformation_mat[ai, 3] = origin_offset
 
         return transformation_mat
 
-    @space_conv_input
-    def map_points_to(self, target, pts):
+    @to_target
+    def map_points_to(self, target, pts, shape=None):
         """Map points to target space convention.
         Parameters
         ----------
@@ -244,13 +241,17 @@ class SpaceConvention:
             Target space convention.
         pts : (n, 3) numpy array
             Array with the points to be mapped.
+        shape : tuple, opt
+            Must be passed if the object does not have one specified.
 
         Returns
         -------
         (n, 3) numpy array
             Array with the transformed points.
         """
-        transformation_mat = self.transformation_matrix_to(target)
+        shape = shape if shape is not None else self.shape
+
+        transformation_mat = self.transformation_matrix_to(target, shape=shape)
 
         # A column of zeros is required for the matrix multiplication:
         pts_to_transform = np.insert(pts, 3, np.ones(pts.shape[0]), axis=1)
