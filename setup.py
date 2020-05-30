@@ -19,7 +19,7 @@ setup(
             "nox",
         ]
     },
-    python_requires=">=3.6, <=3.8",
+    python_requires=">=3.6",
     packages=find_namespace_packages(exclude=("docs", "tests*")),
     include_package_data=True,
     url="https://github.com/brainglobe/bgspace",
@@ -33,7 +33,8 @@ setup(
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
-        "Intended Audience :: Developers",
+        "Programming Language :: Python :: 3.8",
+        "Intended Audience :: Researchers",
         "Intended Audience :: Science/Research",
     ],
     zip_safe=False,

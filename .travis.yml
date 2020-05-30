@@ -1,6 +1,5 @@
 language: python
 dist: xenial
-
 matrix:
   include:
   - python: '3.6'
@@ -11,8 +10,16 @@ matrix:
     env: NOXSESSION="tests-3.8"
   - python: '3.8'
     env: NOXSESSION="lint"
-
 install:
-  - pip install nox
-
+- pip install nox
 script: nox --session "$NOXSESSION"
+
+deploy:
+  provider: pypi
+  user: vigji
+  password:
+    secure: m11FVL4DusdFcswZPZeagH47lEkIDsbMS81QZRxpNfb8br8RmvvfARWmdhfr3XcqdUIBFpgHKdqujQM7MtyxES4akELqZ18NLjdQwiwG633SLKXXI60t7XYsXF3xEyqCJY3I9Ea/2bZlL6WqYvRNMDEwg/HHx4y7cQ+Yfjjkh0JnX69ZksIDHav/r0IYb76qo/dzrsGdzZGrAdJC4J6vLQg2oC6hXl68BMOwc4wJHS1GJKCHBI7HXAZYPDGIiFhDo9uQMbfdhiT645hJpzpnTzapoaI9DtDrWo3s4cNgQE/ser9w5jvY5Thzdf3PWcCOQc1WkIrFHyz57FZxpvpvGIdn2Nw3jNnMIc2c4hbt7Coc6eKIzWUg1LNTAcIpn7Sxn1xYGTNauE3C8ZIDSEePter0tfaknTO3tTsQE30B3ivE8USmoxB+u/0hOE4glZQtxvLZAvn4+e00fvk9SKhM71cOBFzSY3/1iMblftQoBiGOxkDtC/JmU8EGgL7k3HkBXiCCP26FveIq52C0l7Kn9GMNZ0bCfSWh2zOFXDVW8pXseRFL9/FaGyucwzwFxsyM7oFHs7880G6uRZOBCcRx3f/YoM1HJqiupEk/PMwyBDUWbftvnFdi/MxXNiLE1YcRjCHevrtr9BwEywrkTEZjPTFeoRK8IAUaw4SuemjZJe0=
+  on:
+    distributions: sdist bdist_wheel
+    repo: brainglobe/bgspace
+    condition: $NOXSESSION = "tests-3.7"
