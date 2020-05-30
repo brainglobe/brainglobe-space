@@ -1,7 +1,10 @@
 import nox
+import os
+
+python = os.environ.get("TRAVIS_PYTHON_VERSION")
 
 
-@nox.session(python=["3.5", "3.6", "3.7", "3.8"])
+@nox.session(python=python)
 def tests(session):
     session.install("pytest")
     session.install("-r", "requirements.txt")
