@@ -13,7 +13,7 @@ nox.options.reuse_existing_virtualenvs = True
 def tests(session):
     session.install("pytest")
     session.install("-r", "requirements.txt")
-    session.run("pytest")
+    session.run("pytest", "--cov=bgspace")
 
 
 @nox.session
