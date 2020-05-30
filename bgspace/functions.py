@@ -24,7 +24,7 @@ def map_to(source, target):
     return SpaceConvention(source).map_to(target)
 
 
-def map_stack_to(source, target, stack):
+def map_stack_to(source, target, stack, copy=False):
     """Transpose and flip stack to move it to target space convention.
 
     Parameters
@@ -42,7 +42,7 @@ def map_stack_to(source, target, stack):
     -------
 
     """
-    return SpaceConvention(source).map_stack_to(target, stack)
+    return SpaceConvention(source).map_stack_to(target, stack, copy=False)
 
 
 def transformation_matrix_to(source, target, shape=None):

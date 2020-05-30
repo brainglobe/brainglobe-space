@@ -16,6 +16,7 @@ setup(
             "gitpython",
             "coverage",
             "pre-commit",
+            "nox",
         ]
     },
     python_requires=">=3.6, <=3.8",
