@@ -1,0 +1,26 @@
+language: python
+python:
+- 3.8
+- 3.7
+- 3.6
+install:
+- pip install -U tox-travis
+
+script:
+- tox
+
+after_success:
+- pip install coveralls
+- coveralls
+
+  - provider: pypi
+    skip_cleanup: true
+    distributions: sdist bdist_wheel
+    user: __token__
+    password:
+      secure: TltN9lnlaRCw8SxrZPF93fZp4Pl/mElyfL9jPWylsq+tIlp40uUpvhrK+n8ViKVM7EUoBCr0SiIGN8W2p2fGEdLkZJz0+LLhP+omTLM7rGeJ1+0f8wnwhYhDUGmmmjkad8QF0YWlcdRCvir4WsoZrWKemcH5ZipNuHWrPpC3yHt9VB2w2MXNSGipkUy3nRYTqn/GPFeMTdrKPEKpzHVC6s0PSFRjAO1n4wONCkm0FcCYf3AQlE6rW2cYRyufMF7JCqdG7WrYwcc3xgEHEAC3wurz1LgIGcxnHEQg4++b8WFYf30BzqcZRd/WuAiTqmKEQw8jqKklRQ34aTB6OKSzeJWaMDjWetEACcYK96szPSDPCotGKCo8JH8L+PhhfkIQ8oQVQcfC2FpDvadamVTnZoCWlLyanohq1MqFsf2PoEohj5d3kyVFHRpCzQaOuX79lkZtaofrvRtBWs6YmFWPlekubjSGMJaBSe1HYWcnY/AZCmGfaXiEUFmyMO0hsWM+Axkz4fItJ00ndMZlI61xUUkIueQYuItzYPJHZ3SLuRXB1E4hGiFmOU5UPuin18V8xWI3AT6lENgrkut2QXCyx8h5GkilQsALQDKJ86E8VoL4VjEJdLGPROKn4ZQgub++p/t4GoBJ0SnC5Q6RvLad9lIU4Z/FS6/cxXixCGaqzDw=
+    on:
+      tags: true
+      branch: master
+      python: 3.8
+    skip_existing: true

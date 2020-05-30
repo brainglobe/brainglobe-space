@@ -8,7 +8,16 @@ setup(
     version="0.0.1",
     description="Anatomical space conventions made easy",
     install_requires=requirements,
-    extras_require={"dev": ["pre-commit", "pytest"]},
+    extras_require={
+        "dev": [
+            "black",
+            "pytest-cov",
+            "pytest",
+            "gitpython",
+            "coverage",
+            "pre-commit",
+        ]
+    },
     python_requires=">=3.6, <=3.8",
     packages=find_namespace_packages(exclude=("docs", "tests*")),
     include_package_data=True,
