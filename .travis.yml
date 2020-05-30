@@ -13,7 +13,6 @@ matrix:
     env: NOXSESSION="lint"
 
 install:
-  - pip install --upgrade pip setuptools
-  - pip install .
+  - pip install nox
 
 script: nox --session "$NOXSESSION"
