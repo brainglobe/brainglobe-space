@@ -6,18 +6,19 @@ Working with anatomical images, one often encounters the problem of matching the
 `BGSpace` provide a neat way of defining an anatomical space, and to operate stacks and point transformations between spaces.
 
 ## Usage
-To define a new anatomical space, it is sufficient to give the directions of the stack origin position::
+To define a new anatomical space, it is sufficient to give the directions of the stack origin position:
 
 ```python
 source_origin = ("Left", "Superior", "Anterior")
 target_origin = ("Inferior", "Posterior", "Right")
 ```
 
-A stack can be transformed from the source to the target space simply with::
+A stack can be then easily transformed from the source to the target space:
 
 ```python
-import bg
+import bgspace as bg
 stack = np.random.rand(3, 2, 4)
+
 mapped_stack = bg.map_stack_to(source_origin, target_origin, stack)
 ```
 
@@ -25,12 +26,18 @@ mapped_stack = bg.map_stack_to(source_origin, target_origin, stack)
 The transformation is handled only with numpy index operations; *i.e.*, no complex
 image affine transformations are applied. This is often useful as the preparatory step for starting any kind of image registration.
 
-A shortened syntax can be used to define a space using initials of the origin directions::
+A shortened syntax can be used to define a space using initials of the origin directions:
 
 ```python
 mapped_stack = bg.map_stack_to("lsa", "ipr", stack)
 ```
 
+---
+**NOTE**
+
+When you work with a stack, the origin is the upper left corner when you show the first element `stack[0, :, :]` with matplotlib or when you open the stack with ImageJ.
+
+---
 
 ## The `SpaceConvention` class
 
@@ -52,10 +59,13 @@ mapped_annotations = source_space.map_points_to("ipr", annotations)  # transform
 
 
 The points are transformed through the generation of a transformation matrix.
-Finally, if we want to log this matrix (e.g., to reconstruct the full transformations sequence of a registration), we can get it with::
+Finally, if we want to log this matrix (e.g., to reconstruct the full transformations sequence of a registration), we can get it:
 
 ```
-    transformation_matrix = SpaceConvention.transformation_matrix_to("ipr")
+    target_space = bg.SpaceConvention("ipr", stack.shape)
+    transformation_matrix = SpaceConvention.transformation_matrix_to(target_space)
+    # equivalent to:
+    transformation_matrix = SpaceConvention.transformation_matrix_to("ipr", stack.shape)
 ```
 
-The target get always be defined as a full list of labels, an abbreviation string, or a `bg.SpaceConvention` object.
+The target get always be defined as a `bg.SpaceConvention` object, or a valid origin specification plus a shape (the shape is required only if axes flips are required).
