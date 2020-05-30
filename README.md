@@ -3,7 +3,15 @@ Anatomical space conventions made easy.
 
 Working with anatomical images, one often encounters the problem of matching the orientation of stacks with different conventions about axes orientation and order. Moreover, when multiple swaps and flips are involved, it can be annoying to map the same transformations to volumes and points (e.g., coordinates or meshes).
 
-`BGSpace` provide a neat way of defining an anatomical space, and to operate stacks and point transformations between spaces.
+`BGSpace` provides a neat way of defining an anatomical space, and of operating stacks and point transformations between spaces.
+
+## Installation
+
+You can install `BGSpace` with:
+```
+pip install bgspace
+```
+
 
 ## Usage
 To define a new anatomical space, it is sufficient to give the directions of the stack origin position:
@@ -17,6 +25,7 @@ A stack can be then easily transformed from the source to the target space:
 
 ```python
 import bgspace as bg
+import numpy as np
 stack = np.random.rand(3, 2, 4)
 
 mapped_stack = bg.map_stack_to(source_origin, target_origin, stack)

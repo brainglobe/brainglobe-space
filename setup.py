@@ -1,7 +1,12 @@
+"""`BGSpace` provides a neat way of defining an anatomical space, and to operate
+stacks and point transformations between anatomical spaces.
+"""
+
 from setuptools import setup, find_namespace_packages
 
-requirements = ["numpy"]
 
+with open("requirements.txt") as f:
+    requirements = f.read().splitlines()
 
 setup(
     name="bgspace",
@@ -19,6 +24,7 @@ setup(
             "nox",
         ]
     },
+    project_description=__doc__,
     python_requires=">=3.6",
     packages=find_namespace_packages(exclude=("docs", "tests*")),
     include_package_data=True,
@@ -34,7 +40,6 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
-        "Intended Audience :: Researchers",
         "Intended Audience :: Science/Research",
     ],
     zip_safe=False,
