@@ -85,3 +85,9 @@ Finally, if we want to log this matrix (e.g., to reconstruct the full transforma
 ```
 
 The target get always be defined as a `bg.SpaceConvention` object, or a valid origin specification plus a shape (the shape is required only if axes flips are required).
+
+## #TODO
+
+- [ ] Iterate over axes names for plots, add utils for (dependency-free) label generation for plots;
+- [ ] Get stack projections in user-defined order;
+- [ ] Get stack planes at hairline cross in user-defined order;
