@@ -22,4 +22,4 @@ deploy:
   on:
     distributions: sdist bdist_wheel
     repo: brainglobe/bgspace
-    condition: $NOXSESSION = "tests-3.7"
+    condition: $NOXSESSION = "tests-3.8"
