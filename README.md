@@ -62,7 +62,10 @@ The points are transformed through the generation of a transformation matrix.
 Finally, if we want to log this matrix (e.g., to reconstruct the full transformations sequence of a registration), we can get it:
 
 ```
-    transformation_matrix = SpaceConvention.transformation_matrix_to("ipr")
+    target_space = bg.SpaceConvention("ipr", stack.shape)
+    transformation_matrix = SpaceConvention.transformation_matrix_to(target_space)
+    # equivalent to:
+    transformation_matrix = SpaceConvention.transformation_matrix_to("ipr", stack.shape)
 ```
 
-The target get always be defined as a full list of labels, an abbreviation string, or a `bg.SpaceConvention` object.
+The target get always be defined as a `bg.SpaceConvention` object, or a valid origin specification plus a shape (the shape is required only if axes flips are required).
