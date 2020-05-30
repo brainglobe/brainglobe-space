@@ -5,7 +5,7 @@ requirements = ["numpy"]
 
 setup(
     name="bgspace",
-    version="0.0.1",
+    version="version='0.1.0'",
     description="Anatomical space conventions made easy",
     install_requires=requirements,
     extras_require={
