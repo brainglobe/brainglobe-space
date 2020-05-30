@@ -8,22 +8,15 @@ from setuptools import setup, find_namespace_packages
 with open("requirements.txt") as f:
     requirements = f.read().splitlines()
 
+with open("requirements_dev.txt") as f:
+    requirements_dev = f.read().splitlines()
+
 setup(
     name="bgspace",
     version="0.1.2",
     description="Anatomical space conventions made easy",
     install_requires=requirements,
-    extras_require={
-        "dev": [
-            "black",
-            "pytest-cov",
-            "pytest",
-            "gitpython",
-            "coverage",
-            "pre-commit",
-            "nox",
-        ]
-    },
+    extras_require={"dev": requirements_dev},
     project_description=__doc__,
     python_requires=">=3.6",
     packages=find_namespace_packages(exclude=("docs", "tests*")),
