@@ -13,7 +13,7 @@ with open("requirements_dev.txt") as f:
 
 setup(
     name="bgspace",
-    version="0.1.3",
+    version="0.1.4",
     description="Anatomical space conventions made easy",
     install_requires=requirements,
     extras_require={"dev": requirements_dev},
