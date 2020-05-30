@@ -1,5 +1,10 @@
 # BGSpace
 Anatomical space conventions made easy.
+[![Python Version](https://img.shields.io/pypi/pyversions/bgspace.svg)](https://pypi.org/project/bgspace)
+[![PyPI](https://img.shields.io/pypi/v/bgspace.svg)](https://pypi.org/project/bgspace)
+[![Build Status](https://travis-ci.com/brainglobe/bgspace.svg?branch=master)](https://travis-ci.com/brainglobe/bgspace)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
+
 
 Working with anatomical images, one often encounters the problem of matching the orientation of stacks with different conventions about axes orientation and order. Moreover, when multiple swaps and flips are involved, it can be annoying to map the same transformations to volumes and points (e.g., coordinates or meshes).
 
