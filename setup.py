@@ -17,7 +17,7 @@ setup(
     description="Anatomical space conventions made easy",
     install_requires=requirements,
     extras_require={"dev": requirements_dev},
-    project_description=__doc__,
+    long_description=__doc__,
     python_requires=">=3.6",
     packages=find_namespace_packages(exclude=("docs", "tests*")),
     include_package_data=True,
