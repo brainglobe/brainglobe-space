@@ -52,7 +52,7 @@ mapped_stack = bg.map_stack_to("lsa", "ipr", stack)
 ---
 **NOTE**
 
-When you work with a stack, the origin is the upper left corner when you show the first element `stack[0, :, :]` with matplotlib or when you open the stack with ImageJ.
+When you work with a stack, the origin is the upper left corner when you show the first element `stack[0, :, :]` with matplotlib or when you open the stack with ImageJ. First dimension is the one that you are slicing, the second the height of the image, and the third the width of the image.
 
 ---
 
