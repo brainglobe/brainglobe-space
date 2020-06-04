@@ -5,6 +5,7 @@ Anatomical space conventions made easy.
 [![PyPI](https://img.shields.io/pypi/v/bgspace.svg)](https://pypi.org/project/bgspace)
 [![Build Status](https://travis-ci.com/brainglobe/bgspace.svg?branch=master)](https://travis-ci.com/brainglobe/bgspace)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Coverage Status](https://coveralls.io/repos/github/brainglobe/bgspace/badge.svg?branch=master)](https://coveralls.io/github/brainglobe/bgspace?branch=master)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
 
@@ -101,3 +102,5 @@ for i, (plane, labels) in enumerate(zip(sc.sections, sc.axis_labels)):
     axs[i].set_ylabel(labels[0])
     axs[i].set_xlabel(labels[1])
 ```
+
+![](/docs/img/projections.png)
