@@ -4,7 +4,6 @@ Anatomical space conventions made easy.
 [![Python Version](https://img.shields.io/pypi/pyversions/bgspace.svg)](https://pypi.org/project/bgspace)
 [![PyPI](https://img.shields.io/pypi/v/bgspace.svg)](https://pypi.org/project/bgspace)
 [![Build Status](https://travis-ci.com/brainglobe/bgspace.svg?branch=master)](https://travis-ci.com/brainglobe/bgspace)
-[![Coverage Status](https://coveralls.io/repos/github/brainglobe/bgspace/badge.svg?branch=master)](https://coveralls.io/github/brainglobe/bgspace?branch=master)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
@@ -87,8 +86,18 @@ Finally, if we want to log this matrix (e.g., to reconstruct the full transforma
 
 The target get always be defined as a `bg.SpaceConvention` object, or a valid origin specification plus a shape (the shape is required only if axes flips are required).
 
-## #TODO
 
-- [ ] Iterate over axes names for plots, add utils for (dependency-free) label generation for plots;
-- [ ] Get stack projections in user-defined order;
-- [ ] Get stack planes at hairline cross in user-defined order;
+## Easy iteration over projections
+
+Finally, another convenient feature of BGSpace is the possibility of iterating easily through the projections of the stack and generate section names and axes labels:
+
+```
+sc = bgs.SpaceConvention("asl")  # origin for the stack to be plotted
+
+for i, (plane, labels) in enumerate(zip(sc.sections, sc.axis_labels)):
+    axs[i].imshow(stack_pad.mean(i))
+    
+    axs[i].set_title(f"{plane.capitalize()} view")
+    axs[i].set_ylabel(labels[0])
+    axs[i].set_xlabel(labels[1])
+```
