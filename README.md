@@ -96,7 +96,7 @@ Finally, another convenient feature of BGSpace is the possibility of iterating e
 sc = bgs.SpaceConvention("asl")  # origin for the stack to be plotted
 
 for i, (plane, labels) in enumerate(zip(sc.sections, sc.axis_labels)):
-    axs[i].imshow(stack_pad.mean(i))
+    axs[i].imshow(stack.mean(i))
     
     axs[i].set_title(f"{plane.capitalize()} view")
     axs[i].set_ylabel(labels[0])
