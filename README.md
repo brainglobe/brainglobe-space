@@ -5,6 +5,7 @@ Anatomical space conventions made easy.
 [![PyPI](https://img.shields.io/pypi/v/bgspace.svg)](https://pypi.org/project/bgspace)
 [![Build Status](https://travis-ci.com/brainglobe/bgspace.svg?branch=master)](https://travis-ci.com/brainglobe/bgspace)
 [![Coverage Status](https://coveralls.io/repos/github/brainglobe/bgspace/badge.svg?branch=master)](https://coveralls.io/github/brainglobe/bgspace?branch=master)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
 
@@ -51,7 +52,7 @@ mapped_stack = bg.map_stack_to("lsa", "ipr", stack)
 ---
 **NOTE**
 
-When you work with a stack, the origin is the upper left corner when you show the first element `stack[0, :, :]` with matplotlib or when you open the stack with ImageJ.
+When you work with a stack, the origin is the upper left corner when you show the first element `stack[0, :, :]` with matplotlib or when you open the stack with ImageJ. First dimension is the one that you are slicing, the second the height of the image, and the third the width of the image.
 
 ---
 
