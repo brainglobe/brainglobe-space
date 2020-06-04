@@ -94,6 +94,21 @@ def test_stack_flips(src_o, tgt_o, src_shape, tgt_shape):
             assert set(mapped_stack[indexes]) == set(target_stack[indexes])
 
 
+@pytest.mark.parametrize("copy_flag", [True, False])
+def test_stack_copy(copy_flag):
+    source_stack = np.random.rand(3, 4, 2)
+    source_space = SpaceConvention("asl")
+    pre_copy = source_stack.copy()
+
+    mapped_stack = source_space.map_stack_to(
+        "lsp", source_stack, copy=copy_flag
+    )
+
+    mapped_stack[0, 1, 1] = 1
+
+    assert np.allclose(source_stack, pre_copy) == copy_flag
+
+
 # define some conditions to be cross_checked:
 @pytest.mark.parametrize("src_o", valid_origins)
 @pytest.mark.parametrize("tgt_o", valid_origins)
@@ -122,3 +137,54 @@ def test_point_transform(src_o, tgt_o, src_shape, tgt_shape):
             p_s, p_m = [tuple(p.astype(np.int)) for p in [p_source, p_mapped]]
 
             assert source_stack[p_s] == mapped_stack[p_m]
+
+
+def test_point_transform_fail():
+    s = SpaceConvention("asl")
+    with pytest.raises(TypeError) as error:
+        s.map_points_to("psl", np.array([[0, 1, 2], [0, 1, 2]]))
+    assert "TypeError" in str(error)
+
+
+@pytest.mark.parametrize(
+    "orig, lab, sect",
+    [
+        (
+            "asl",
+            (
+                ("Inferior - Superior", "Left - Right"),
+                ("Posterior - Anterior", "Left - Right"),
+                ("Posterior - Anterior", "Superior - Inferior"),
+            ),
+            ("frontal", "horizontal", "sagittal"),
+        ),
+        (
+            "ipl",
+            (
+                ("Anterior - Posterior", "Left - Right"),
+                ("Superior - Inferior", "Left - Right"),
+                ("Superior - Inferior", "Posterior - Anterior"),
+            ),
+            ("horizontal", "frontal", "sagittal"),
+        ),
+        (
+            "pli",
+            (
+                ("Right - Left", "Inferior - Superior"),
+                ("Anterior - Posterior", "Inferior - Superior"),
+                ("Anterior - Posterior", "Left - Right"),
+            ),
+            ("frontal", "sagittal", "horizontal"),
+        ),
+    ],
+)
+def test_labels_iterations(orig, lab, sect):
+    space = SpaceConvention(orig)
+
+    assert space.axis_labels == lab
+    assert space.sections == sect
+    assert space.index_pairs == ((1, 2), (0, 2), (0, 1))
+
+
+def test_print():
+    print(SpaceConvention("asl"))

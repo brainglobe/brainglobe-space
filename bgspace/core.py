@@ -63,14 +63,20 @@ class SpaceConvention:
         "frontal": {"l", "r"},
     }
 
+    map_planes_from_axes = {
+        "sagittal": {"p", "a", "s", "i"},
+        "frontal": {"s", "i", "l", "r"},
+        "horizontal": {"p", "a", "l", "r"},
+    }
+
     # Map limits letters to complete names
     lims_labels = {
-        "p": "Posterior",
-        "a": "Anterior",
-        "s": "Superior",
-        "i": "Inferior",
-        "l": "Left",
-        "r": "Right",
+        "p": "posterior",
+        "a": "anterior",
+        "s": "superior",
+        "i": "inferior",
+        "l": "left",
+        "r": "right",
     }
 
     def __init__(self, origin, shape=None):
@@ -226,7 +232,7 @@ class SpaceConvention:
 
             if origin_offset is None:
                 raise TypeError(
-                    "A valid shape is required for this trasformation!"
+                    "A valid shape is required for this transformation!"
                 )
             transformation_mat[ai, 3] = origin_offset
 
@@ -257,3 +263,87 @@ class SpaceConvention:
         pts_to_transform = np.insert(pts, 3, np.ones(pts.shape[0]), axis=1)
 
         return (transformation_mat @ pts_to_transform.T).T[:, :3]
+
+    @property
+    def index_pairs(self):
+        """Tuple of index pairs for the remaining axes for projections
+        Returns
+        -------
+        tuple of tuples
+            index tuples
+        """
+        pairs = []
+        for i in range(3):
+            indexes = list(np.arange(3))
+            indexes.pop(i)
+            pairs.append(tuple(indexes))
+
+        return tuple(pairs)
+
+    @property
+    def sections(self):
+        """Return ordered sections names.
+        
+        Returns
+        -------
+        tuple of str
+            Tuple with the section names
+
+        """
+        planes = []
+        for idx0, idx1 in self.index_pairs:
+            ax0, ax1 = self.axes_description[idx0], self.axes_description[idx1]
+            for k, vals in self.map_planes_from_axes.items():
+                if ax0[0] in vals and ax1[0] in vals:
+                    planes.append(k)
+
+        return tuple(planes)
+
+    @property
+    def axis_labels(self):
+        """Get axis labels for all the projections.
+        
+        Returns
+        -------
+        tuple of tuple of str
+            tuple with the labels
+        """
+        axis_labels = []
+        for idx0, idx1 in self.index_pairs:
+            ax0, ax1 = self.axes_description[idx0], self.axes_description[idx1]
+            ax0 = ax0[::-1]  # Flip for images
+            axis_labels.append(
+                tuple([self.format_axis_label(ax) for ax in [ax0, ax1]])
+            )
+
+        return tuple(axis_labels)
+
+    def format_axis_label(self, axis):
+        """Format the axes using full names.
+
+        Parameters
+        ----------
+        axis : str from self.axes_description
+            Axis to be formatted.
+
+        Returns
+        -------
+        str
+            Formatted string.
+
+        """
+        return "{} - {}".format(
+            *[self.lims_labels[s].capitalize() for s in axis]
+        )
+
+    def __repr__(self):
+        label_l = "<BGSpace SpaceConvention object>\n"
+        origin_l = "origin: {}\n".format(
+            tuple([self.lims_labels[s].capitalize() for s in self.origin])
+        )
+        sections_l = "sections: {}\n".format(
+            tuple([f"{s.capitalize()} plane" for s in self.sections])
+        )
+        shape_l = "shape: {}\n".format(self.shape)
+
+        return label_l + origin_l + sections_l + shape_l
