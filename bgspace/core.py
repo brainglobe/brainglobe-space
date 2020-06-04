@@ -225,15 +225,16 @@ class SpaceConvention:
 
         # Fill it in the required places:
         for ai, (bi, f) in enumerate(zip(order, flips)):
+            # Add the ones for the flips and swaps:
             transformation_mat[ai, bi] = -1 if f else 1
 
             # If flipping is necessary, we also need to translate origin:
-            origin_offset = shape[bi] if f else 0
-
-            if origin_offset is None:
+            if shape is None:
                 raise TypeError(
                     "A valid shape is required for this transformation!"
                 )
+            origin_offset = shape[bi] if f else 0
+
             transformation_mat[ai, 3] = origin_offset
 
         return transformation_mat
@@ -347,3 +348,10 @@ class SpaceConvention:
         shape_l = "shape: {}\n".format(self.shape)
 
         return label_l + origin_l + sections_l + shape_l
+
+    def __iter__(self):
+        """Iter over origin, so that we can pass a SpaceConvention to
+        instantiate a SpaceConvention.
+        """
+        for s in self.origin:
+            yield s

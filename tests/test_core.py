@@ -143,7 +143,7 @@ def test_point_transform_fail():
     s = SpaceConvention("asl")
     with pytest.raises(TypeError) as error:
         s.map_points_to("psl", np.array([[0, 1, 2], [0, 1, 2]]))
-    assert "TypeError" in str(error)
+    assert "A valid shape is required" in str(error)
 
 
 @pytest.mark.parametrize(
@@ -188,3 +188,7 @@ def test_labels_iterations(orig, lab, sect):
 
 def test_print():
     print(SpaceConvention("asl"))
+
+
+def test_iteration():
+    assert list(SpaceConvention("asl")) == ["a", "s", "l"]
