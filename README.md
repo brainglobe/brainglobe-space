@@ -78,11 +78,11 @@ mapped_annotations = source_space.map_points_to("ipr", annotations)  # transform
 The points are transformed through the generation of a transformation matrix.
 Finally, if we want to log this matrix (e.g., to reconstruct the full transformations sequence of a registration), we can get it:
 
-```
-    target_space = bg.SpaceConvention("ipr", stack.shape)
-    transformation_matrix = SpaceConvention.transformation_matrix_to(target_space)
-    # equivalent to:
-    transformation_matrix = SpaceConvention.transformation_matrix_to("ipr", stack.shape)
+```python
+target_space = bg.SpaceConvention("ipr", stack.shape)
+transformation_matrix = SpaceConvention.transformation_matrix_to(target_space)
+# equivalent to:
+transformation_matrix = SpaceConvention.transformation_matrix_to("ipr", stack.shape)
 ```
 
 The target get always be defined as a `bg.SpaceConvention` object, or a valid origin specification plus a shape (the shape is required only if axes flips are required).
@@ -92,7 +92,7 @@ The target get always be defined as a `bg.SpaceConvention` object, or a valid or
 
 Finally, another convenient feature of BGSpace is the possibility of iterating easily through the projections of the stack and generate section names and axes labels:
 
-```
+```python
 sc = bgs.SpaceConvention("asl")  # origin for the stack to be plotted
 
 for i, (plane, labels) in enumerate(zip(sc.sections, sc.axis_labels)):
