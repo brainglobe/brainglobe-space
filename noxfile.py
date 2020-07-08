@@ -14,14 +14,14 @@ def tests(session):
     session.install("pytest")
     session.install("pytest-cov")
     session.install("-r", "requirements.txt")
-    session.run("pytest", "--cov=bgspace")
+    session.run("pytest", "--cov=bg_space")
 
 
 @nox.session
 def lint(session):
     session.install(*lint_dependencies)
 
-    files = ["bgspace", "tests", "noxfile.py", "setup.py"]
+    files = ["bg_space", "tests", "noxfile.py", "setup.py"]
 
     session.run("black", "--check", *files)
     session.run("flake8", *files)

@@ -1,4 +1,4 @@
-"""`BGSpace` provides a neat way of defining an anatomical space, and to operate
+"""`bg-space` provides a neat way of defining an anatomical space, and to operate
 stacks and point transformations between anatomical spaces.
 """
 
@@ -12,7 +12,7 @@ with open("requirements_dev.txt") as f:
     requirements_dev = f.read().splitlines()
 
 setup(
-    name="bgspace",
+    name="bg_space",
     version="0.2.0",
     description="Anatomical space conventions made easy",
     install_requires=requirements,
@@ -21,7 +21,7 @@ setup(
     python_requires=">=3.6",
     packages=find_namespace_packages(exclude=("docs", "tests*")),
     include_package_data=True,
-    url="https://github.com/brainglobe/bgspace",
+    url="https://github.com/brainglobe/bg-space",
     author="Luigi Petrucco @portugueslab",
     author_email="luigi.petrucco@gmail.com",
     classifiers=[

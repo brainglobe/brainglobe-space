@@ -1,4 +1,4 @@
-from bgspace.core import SpaceConvention
+from bg_space.core import SpaceConvention
 
 
 # TODO convert to a smarter way to generate those parsing class' methods:

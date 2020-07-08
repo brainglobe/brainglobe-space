@@ -1,6 +1,6 @@
 import numpy as np
 
-from bgspace import SpaceConvention
+from bg_space import SpaceConvention
 
 char_add = np.core.defchararray.add
 

@@ -1,4 +1,4 @@
-# BGSpace
+# BG-Space
 Anatomical space conventions made easy.
 
 [![Python Version](https://img.shields.io/pypi/pyversions/bgspace.svg)](https://pypi.org/project/bgspace)
@@ -11,13 +11,13 @@ Anatomical space conventions made easy.
 
 Working with anatomical images, one often encounters the problem of matching the orientation of stacks with different conventions about axes orientation and order. Moreover, when multiple swaps and flips are involved, it can be annoying to map the same transformations to volumes and points (e.g., coordinates or meshes).
 
-`BGSpace` provides a neat way of defining an anatomical space, and of operating stacks and point transformations between spaces.
+`bg-space` provides a neat way of defining an anatomical space, and of operating stacks and point transformations between spaces.
 
 ## Installation
 
-You can install `BGSpace` with:
+You can install `bg-space` with:
 ```
-pip install bgspace
+pip install bg-space
 ```
 
 
@@ -32,7 +32,7 @@ target_origin = ("Inferior", "Posterior", "Right")
 A stack can be then easily transformed from the source to the target space:
 
 ```python
-import bgspace as bg
+import bg_space as bg
 import numpy as np
 stack = np.random.rand(3, 2, 4)
 
@@ -93,7 +93,7 @@ The target get always be defined as a `bg.SpaceConvention` object, or a valid or
 Finally, another convenient feature of BGSpace is the possibility of iterating easily through the projections of the stack and generate section names and axes labels:
 
 ```python
-sc = bgs.SpaceConvention("asl")  # origin for the stack to be plotted
+sc = bg.SpaceConvention("asl")  # origin for the stack to be plotted
 
 for i, (plane, labels) in enumerate(zip(sc.sections, sc.axis_labels)):
     axs[i].imshow(stack.mean(i))

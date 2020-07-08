@@ -1,5 +1,5 @@
 import numpy as np
-from bgspace.utils import ordered_list_from_set
+from bg_space.utils import ordered_list_from_set
 
 
 def to_target(method):
@@ -57,7 +57,7 @@ class SpaceConvention:
     """
 
     # Use sets to avoid any explicit convention definition:
-    space_specs = {
+    space_axes = {
         "sagittal": {"p", "a"},
         "vertical": {"s", "i"},
         "frontal": {"l", "r"},
@@ -92,7 +92,7 @@ class SpaceConvention:
         for lim in origin:
 
             # Loop over possible axes and origin values:
-            for k, possible_lims in self.space_specs.items():
+            for k, possible_lims in self.space_axes.items():
 
                 # If origin specification in possible values:
                 if lim in possible_lims:
@@ -119,7 +119,7 @@ class SpaceConvention:
         order = []
         for lims in self.axes_description:
             order += [
-                k for k, val in self.space_specs.items() if lims[0] in val
+                k for k, val in self.space_axes.items() if lims[0] in val
             ]
 
         return tuple(order)

@@ -2,13 +2,13 @@ import numpy as np
 
 import pytest
 
-from bgspace.functions import (
+from bg_space.functions import (
     map_to,
     map_stack_to,
     transformation_matrix_to,
     transform_points_to,
 )
-from bgspace.core import SpaceConvention
+from bg_space.core import SpaceConvention
 
 valid_origins = ["asl", "ipl", "pls"]
 
