@@ -10,8 +10,15 @@ def to_target(method):
 
         # isinstance(..., SpaceConvention) here would fail, so:
         if not type(space_description) == type(spaceconv_instance):
-            # Generate description if input was not:
-            space_description = SpaceConvention(space_description)
+            # Generate description if input was not one:
+            print("pr", kwargs)
+            sc_args = {
+                k: kwargs.pop(k)
+                for k in ["shape", "resolution", "offset"]
+                if k in kwargs.keys()
+            }
+            space_description = SpaceConvention(space_description, **sc_args)
+            print("ps", kwargs)
 
         return method(spaceconv_instance, space_description, *args, **kwargs)
 
@@ -50,10 +57,17 @@ class SpaceConvention:
     Parameters
     ----------
     origin : str or tuple of str or list of str
-        Each letter or initial of each string should match a letter in s
-        pace_specs
-    shape : tuple, optional
+        Each letter or initial of each string should match a letter in
+        space_specs.
+    shape : 3 elements tuple, optional
         Shape of the bounding box of the space (e.g. shape of a stack)
+        (default=None).
+    resolution : 3 elements tuple, optional
+        Resolution of the stack for resampling (in any unit, as long as they
+        are consistent across stacks) (default=None).
+    offset : 3 elements tuple, optional
+        Offset of the space, if present - relative to another atlas, in any
+        unit consistent with the resolution (default=(0, 0, 0)).
     """
 
     # Use sets to avoid any explicit convention definition:
@@ -79,9 +93,11 @@ class SpaceConvention:
         "r": "right",
     }
 
-    def __init__(self, origin, shape=None):
+    def __init__(self, origin, shape=None, resolution=None, offset=(0, 0, 0)):
 
         self.shape = shape
+        self.resolution = resolution
+        self.offset = offset
 
         # Reformat to lowercase initial:
         origin = [o[0].lower() for o in origin]
@@ -200,21 +216,20 @@ class SpaceConvention:
         return stack
 
     @to_target
-    def transformation_matrix_to(self, target, shape=None):
+    def transformation_matrix_to(self, target):
         """Find transformation matrix going to target space convention.
 
         Parameters
         ----------
         target : SpaceConvention object
             Target space convention.
-        shape : tuple, opt
-            Must be passed if the object does not have one specified.
 
         Returns
         -------
 
         """
-        shape = shape if shape is not None else self.shape
+        # shape = shape if shape is not None else self.shape
+        shape = self.shape
 
         # Find axes order and flips:
         order, flips = self.map_to(target)
@@ -229,9 +244,9 @@ class SpaceConvention:
             transformation_mat[ai, bi] = -1 if f else 1
 
             # If flipping is necessary, we also need to translate origin:
-            if shape is None:
+            if shape is None and f:
                 raise TypeError(
-                    "A valid shape is required for this transformation!"
+                    "The source space should have a shape for this transformation!"
                 )
             origin_offset = shape[bi] if f else 0
 
@@ -240,7 +255,7 @@ class SpaceConvention:
         return transformation_mat
 
     @to_target
-    def map_points_to(self, target, pts, shape=None):
+    def map_points_to(self, target, pts):
         """Map points to target space convention.
         Parameters
         ----------
@@ -248,17 +263,17 @@ class SpaceConvention:
             Target space convention.
         pts : (n, 3) numpy array
             Array with the points to be mapped.
-        shape : tuple, opt
-            Must be passed if the object does not have one specified.
 
         Returns
         -------
         (n, 3) numpy array
             Array with the transformed points.
         """
-        shape = shape if shape is not None else self.shape
+        # shape = shape if shape is not None else self.shape
 
-        transformation_mat = self.transformation_matrix_to(target, shape=shape)
+        transformation_mat = self.transformation_matrix_to(
+            target
+        )  # , shape=shape)
 
         # A column of zeros is required for the matrix multiplication:
         pts_to_transform = np.insert(pts, 3, np.ones(pts.shape[0]), axis=1)

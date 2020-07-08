@@ -69,7 +69,7 @@ def test_shape_decorator(valid_origins):
     # Check if we can overwrite none or different orientations:
     for args in [(origin, None), (origin, correct_shape[::-1])]:
         new_shape_mat = SpaceConvention(*args).transformation_matrix_to(
-            target_space, shape=correct_shape
+            target_space
         )
 
         assert np.allclose(correct_mat, new_shape_mat)
@@ -109,7 +109,7 @@ def test_stack_copy(copy_flag):
     assert np.allclose(source_stack, pre_copy) == copy_flag
 
 
-# define some conditions to be cross_checked:
+# define some conditions to be cross-checked:
 @pytest.mark.parametrize("src_o", valid_origins)
 @pytest.mark.parametrize("tgt_o", valid_origins)
 @pytest.mark.parametrize("src_shape", some_shapes)
@@ -143,7 +143,7 @@ def test_point_transform_fail():
     s = SpaceConvention("asl")
     with pytest.raises(TypeError) as error:
         s.map_points_to("psl", np.array([[0, 1, 2], [0, 1, 2]]))
-    assert "A valid shape is required" in str(error)
+    assert "The source space should have a shape" in str(error)
 
 
 @pytest.mark.parametrize(
