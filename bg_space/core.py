@@ -1,4 +1,6 @@
 import numpy as np
+from scipy import ndimage as nd
+
 from bg_space.utils import ordered_list_from_set
 
 
@@ -93,7 +95,7 @@ class SpaceConvention:
         "r": "right",
     }
 
-    def __init__(self, origin, shape=None, resolution=None, offset=(0, 0, 0)):
+    def __init__(self, origin, shape=None, resolution=None, offset=None):
 
         self.shape = shape
         self.resolution = resolution
@@ -152,8 +154,9 @@ class SpaceConvention:
 
     @to_target
     def map_to(self, target):
-        """Find axes reordering and flips required to go to
+        """Find axes reordering, flips, ratios and offsets required to go to
         target space convention.
+        The order of flips, ratios and offsets is the one of the target space!
 
         Parameters
         ----------
@@ -166,6 +169,10 @@ class SpaceConvention:
             Axes order to move to target space.
         tuple
             Sequence of flips to move to target space (in target axis order).
+        tuple
+            Scale factors to move target space (in target axis order).
+        tuple
+            Offsets to move target space (in target axis order and resolution).
 
         """
 
@@ -180,10 +187,31 @@ class SpaceConvention:
             ]
         )
 
-        return order, flips
+        # Calculate scales if resolutions are specified:
+        if self.resolution is not None and target.resolution is not None:
+            scales = tuple(
+                [
+                    self.resolution[si] / target.resolution[ti]
+                    for ti, si in enumerate(order)
+                ]
+            )
+        else:
+            scales = (1, 1, 1)
+
+        if self.offset is not None and target.offset is not None:
+            scales = tuple(
+                [
+                    self.resolution[si] / target.resolution[ti]
+                    for ti, si in enumerate(order)
+                ]
+            )
+        else:
+            offsets = (0, 0, 0)
+
+        return order, flips, scales, offsets
 
     @to_target
-    def map_stack_to(self, target, stack, copy=False):
+    def map_stack_to(self, target, stack, copy=False, to_target_shape=False):
         """Transpose and flip stack to move it to target space convention.
 
         Parameters
@@ -193,7 +221,10 @@ class SpaceConvention:
         stack : numpy array
             Stack to map from space convention a to space convention b
         copy : bool, optional
-            If true, stack is copied.
+            If true, stack is copied (default=False).
+        to_target_shape : bool, optional
+            If true, stack is padded or cropped to fit target shape. Default
+            is false, but if a non-0 offset is calculated it is set to True.
 
         Returns
         -------
@@ -201,7 +232,7 @@ class SpaceConvention:
         """
 
         # Find order swapping and flips:
-        order, flips = self.map_to(target)
+        order, flips, scales, offsets = self.map_to(target)
 
         # If we want to work on a copy, create:
         if copy:
@@ -212,6 +243,13 @@ class SpaceConvention:
 
         # Flip as required:
         stack = np.flip(stack, [i for i, f in enumerate(flips) if f])
+
+        # If zooming is required, resample using scipy:
+        if scales != (1, 1, 1):
+            print("scaling")
+            stack = nd.zoom(stack, scales, order=1)
+
+        # TODO implement offset
 
         return stack
 
@@ -232,7 +270,7 @@ class SpaceConvention:
         shape = self.shape
 
         # Find axes order and flips:
-        order, flips = self.map_to(target)
+        order, flips, scales, offsets = self.map_to(target)
 
         # Instantiate transformation matrix:
         transformation_mat = np.zeros((4, 4))
@@ -241,7 +279,7 @@ class SpaceConvention:
         # Fill it in the required places:
         for ai, (bi, f) in enumerate(zip(order, flips)):
             # Add the ones for the flips and swaps:
-            transformation_mat[ai, bi] = -1 if f else 1
+            transformation_mat[ai, bi] = -scales[ai] if f else scales[ai]
 
             # If flipping is necessary, we also need to translate origin:
             if shape is None and f:
