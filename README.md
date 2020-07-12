@@ -5,7 +5,7 @@ Anatomical space conventions made easy.
 [![PyPI](https://img.shields.io/pypi/v/bg-space.svg)](https://pypi.org/project/bg-space)
 [![Build Status](https://travis-ci.com/brainglobe/bg-space.svg?branch=master)](https://travis-ci.com/brainglobe/bg-space)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Coverage Status](https://coveralls.io/repos/github/brainglobe/bgspace/badge.svg)](https://coveralls.io/github/brainglobe/bgspace)
+[![Coverage Status](https://coveralls.io/repos/github/brainglobe/bg-space/badge.svg)](https://coveralls.io/github/brainglobe/bg-space)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
 
