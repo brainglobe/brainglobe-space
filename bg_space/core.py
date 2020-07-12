@@ -199,9 +199,9 @@ class SpaceConvention:
             scales = (1, 1, 1)
 
         if self.offset is not None and target.offset is not None:
-            scales = tuple(
+            offsets = tuple(
                 [
-                    self.resolution[si] / target.resolution[ti]
+                    target.offset[si] - self.offset[ti]
                     for ti, si in enumerate(order)
                 ]
             )
@@ -211,7 +211,9 @@ class SpaceConvention:
         return order, flips, scales, offsets
 
     @to_target
-    def map_stack_to(self, target, stack, copy=False, to_target_shape=False):
+    def map_stack_to(
+        self, target, stack, copy=False, to_target_shape=False, interp_order=3
+    ):
         """Transpose and flip stack to move it to target space convention.
 
         Parameters
@@ -225,7 +227,10 @@ class SpaceConvention:
         to_target_shape : bool, optional
             If true, stack is padded or cropped to fit target shape. Default
             is false, but if a non-0 offset is calculated it is set to True.
-
+        interp_order : int, optional
+            Order of the spline for interpolation in zoom function, used only
+            in resampling. Default is 3 (scipy default), use 0 for nearest
+            neighbour resampling.
         Returns
         -------
 
@@ -246,10 +251,11 @@ class SpaceConvention:
 
         # If zooming is required, resample using scipy:
         if scales != (1, 1, 1):
-            print("scaling")
-            stack = nd.zoom(stack, scales, order=1)
+            stack = nd.zoom(stack, scales, order=interp_order)
 
-        # TODO implement offset
+        # if offset is required, crop and pad:
+        if offsets != (0, 0, 0) and to_target_shape:
+            pass
 
         return stack
 

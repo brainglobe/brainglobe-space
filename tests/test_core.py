@@ -208,3 +208,35 @@ def test_print():
 
 def test_iteration():
     assert list(SpaceConvention("asl")) == ["a", "s", "l"]
+
+
+def test_zoom():
+    s = SpaceConvention("asl", resolution=(1, 1, 1))
+    t = SpaceConvention("asl", resolution=(1, 1, 2))
+
+    m = np.array(
+        [
+            [[1, 9, 15, 17, 20, 25], [1, 9, 15, 17, 20, 25]],
+            [[2, 18, 30, 34, 40, 50], [2, 18, 30, 34, 40, 50]],
+        ]
+    ).astype(np.float)
+
+    assert np.allclose(
+        s.map_stack_to(t, m),
+        np.array(
+            [
+                [[1.0, 16.20454545, 25.0], [1.0, 16.20454545, 25.0]],
+                [[2.0, 32.40909091, 50.0], [2.0, 32.40909091, 50.0]],
+            ]
+        ),
+    )
+
+    assert np.allclose(
+        s.map_stack_to(t, m, interp_order=1),
+        np.array(
+            [
+                [[1.0, 16.0, 25.0], [1.0, 16.0, 25.0]],
+                [[2.0, 32.0, 50.0], [2.0, 32.0, 50.0]],
+            ]
+        ),
+    )
