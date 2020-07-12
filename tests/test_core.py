@@ -147,7 +147,7 @@ def test_point_transform_fail():
 
 
 @pytest.mark.parametrize(
-    "orig, lab, sect",
+    "orig, lab, sect, normals",
     [
         (
             "asl",
@@ -157,6 +157,11 @@ def test_point_transform_fail():
                 ("Posterior - Anterior", "Superior - Inferior"),
             ),
             ("frontal", "horizontal", "sagittal"),
+            {
+                "frontal": (1, 0, 0),
+                "horizontal": (0, 1, 0),
+                "sagittal": (0, 0, 1),
+            },
         ),
         (
             "ipl",
@@ -166,6 +171,11 @@ def test_point_transform_fail():
                 ("Superior - Inferior", "Posterior - Anterior"),
             ),
             ("horizontal", "frontal", "sagittal"),
+            {
+                "horizontal": (1, 0, 0),
+                "frontal": (0, 1, 0),
+                "sagittal": (0, 0, 1),
+            },
         ),
         (
             "pli",
@@ -175,14 +185,20 @@ def test_point_transform_fail():
                 ("Anterior - Posterior", "Left - Right"),
             ),
             ("frontal", "sagittal", "horizontal"),
+            {
+                "frontal": (1, 0, 0),
+                "sagittal": (0, 1, 0),
+                "horizontal": (0, 0, 1),
+            },
         ),
     ],
 )
-def test_labels_iterations(orig, lab, sect):
+def test_labels_iterations(orig, lab, sect, normals):
     space = SpaceConvention(orig)
 
     assert space.axis_labels == lab
     assert space.sections == sect
+    assert space.plane_normals == normals
     assert space.index_pairs == ((1, 2), (0, 2), (0, 1))
 
 

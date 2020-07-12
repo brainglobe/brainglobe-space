@@ -354,6 +354,15 @@ class SpaceConvention:
         return tuple(planes)
 
     @property
+    def plane_normals(self):
+        """Dictionary of normals for the planes in the space.
+        """
+        return {
+            k: (0, 0, 0)[:i] + (1,) + (0, 0)[i:]
+            for i, k in enumerate(self.sections)
+        }
+
+    @property
     def axis_labels(self):
         """Get axis labels for all the projections.
         
