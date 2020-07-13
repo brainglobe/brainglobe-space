@@ -305,7 +305,7 @@ def test_zoom():
         ),
     ],
 )
-def test_offset(s_dict, t_dict, f_in, result):
+def test_stack_map_offset(s_dict, t_dict, f_in, result):
     s = SpaceConvention(**s_dict)
     t = SpaceConvention(**t_dict)
 
