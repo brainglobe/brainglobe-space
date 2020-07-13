@@ -61,7 +61,7 @@ When you work with a stack, the origin is the upper left corner when you show th
 Sometimes, together with the stack we have to move a set of points (cell coordinates, meshes, etc.). This introduces the additional complexity of keeping track, together with the axes swaps and flips, of the change of the origin offset.
 
 To handle this situation, we can define a source space using the `SpaceConvention`
-class, specifying also the stack shape::
+class, specifying also the stack shape:
 
 ```python
 
@@ -86,6 +86,23 @@ transformation_matrix = SpaceConvention.transformation_matrix_to("ipr", stack.sh
 ```
 
 The target get always be defined as a `bg.SpaceConvention` object, or a valid origin specification plus a shape (the shape is required only if axes flips are required).
+
+## Matching space resolutions and offsets
+The `SpaceConvention` class can deal also with stack resampling/padding/cropping. This requires simply specifying values for resolutions and offsets when instantiating a `SpaceConvention` object. Once that is done, using `SpaceConvention.transformation_matrix_to` creating affine transformation matrices from one space to the other will be a piece of cake!
+
+```python
+source_space = bgs.SpaceConvention("asl", resolution=(2, 1, 2), offset=(1, 0, 0))
+target_space = bgs.SpaceConvention("sal", resolution=(1, 1, 1), offset=(0, 0, 2))
+source_space.transformation_matrix_to(target_space)
+```
+
+Moreover, we can now use those space objects to resample stacks, and to generate stacks matching a target shape with the correct padding/cropping simply by specifying a target offset:
+
+```python
+source_space = bgs.SpaceConvention("asl", resolution=(2, 1, 2), offset=(1, 0, 0))
+target_space = bgs.SpaceConvention("asl", resolution=(1, 1, 1), shape=(5, 4, 2))  # we need a target shape
+source_space.transformation_matrix_to(target_space, stack, to_target_shape=True)
+```
 
 
 ## Easy iteration over projections
