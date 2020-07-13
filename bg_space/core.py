@@ -264,7 +264,7 @@ class SpaceConvention:
                 # Warn if stack to be mapped is out of target shape:
                 if o >= t_sh or (o < 0 and -o >= s_sh):
                     warnings.warn(
-                        f"Stack is out of target shape on at least one axis, mapped stack will be empty!"
+                        "Stack is out of target shape on at least one axis, mapped stack will be empty!"
                     )
                     return empty_stack
                 else:
