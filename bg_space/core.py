@@ -2,6 +2,7 @@ import numpy as np
 from scipy import ndimage as nd
 
 from bg_space.utils import ordered_list_from_set
+import warnings
 
 
 def to_target(method):
@@ -13,14 +14,12 @@ def to_target(method):
         # isinstance(..., SpaceConvention) here would fail, so:
         if not type(space_description) == type(spaceconv_instance):
             # Generate description if input was not one:
-            print("pr", kwargs)
             sc_args = {
                 k: kwargs.pop(k)
                 for k in ["shape", "resolution", "offset"]
                 if k in kwargs.keys()
             }
             space_description = SpaceConvention(space_description, **sc_args)
-            print("ps", kwargs)
 
         return method(spaceconv_instance, space_description, *args, **kwargs)
 
@@ -51,10 +50,10 @@ class SpaceConvention:
     This can be convenient for quickly reorient a stack to match different
     axes convention.
 
-    Transformations generate with this class ARE NOT proper transformations from
-    space a to space b! They are transformations of space a to a new standard
-    orientation matching the convention of space B. This can be very useful
-    as a pre-step for an affine transformation but does not implement it.
+    More advanced usage include resampling in new space resolution, and addition
+    of offsets, useful for stack cropping/padding.
+    Note however that combination of these features with very differently
+    oriented stacks (eg, with different axes directions) can be confusing!
 
     Parameters
     ----------
@@ -95,7 +94,7 @@ class SpaceConvention:
         "r": "right",
     }
 
-    def __init__(self, origin, shape=None, resolution=None, offset=None):
+    def __init__(self, origin, shape=None, resolution=None, offset=(0, 0, 0)):
 
         self.shape = shape
         self.resolution = resolution
@@ -201,7 +200,7 @@ class SpaceConvention:
         if self.offset is not None and target.offset is not None:
             offsets = tuple(
                 [
-                    target.offset[si] - self.offset[ti]
+                    (self.offset[si] - target.offset[ti]) * scales[ti]
                     for ti, si in enumerate(order)
                 ]
             )
@@ -255,7 +254,27 @@ class SpaceConvention:
 
         # if offset is required, crop and pad:
         if offsets != (0, 0, 0) and to_target_shape:
-            pass
+            empty_stack = np.zeros(target.shape)
+
+            slices_target = []
+            slices_stack = []
+            for s_sh, t_sh, o in zip(stack.shape, target.shape, offsets):
+                o = int(o)  # convert to use in indices
+
+                # Warn if stack to be mapped is out of target shape:
+                if o >= t_sh or (o < 0 and -o >= s_sh):
+                    warnings.warn(
+                        f"Stack is out of target shape on at least one axis, mapped stack will be empty!"
+                    )
+                    return empty_stack
+                else:
+                    # Prepare slice lists for source and target:
+                    slices_target.append(slice(max(0, o), o + s_sh))
+                    slices_stack.append(slice(-min(0, o), t_sh - o))
+
+            empty_stack[tuple(slices_target)] = stack[tuple(slices_stack)]
+
+            return empty_stack
 
         return stack
 
@@ -283,16 +302,19 @@ class SpaceConvention:
         transformation_mat[-1, -1] = 1
 
         # Fill it in the required places:
-        for ai, (bi, f) in enumerate(zip(order, flips)):
+        for ai, bi in enumerate(order):
             # Add the ones for the flips and swaps:
-            transformation_mat[ai, bi] = -scales[ai] if f else scales[ai]
+            transformation_mat[ai, bi] = (
+                -scales[ai] if flips[ai] else scales[ai]
+            )
 
             # If flipping is necessary, we also need to translate origin:
-            if shape is None and f:
+            if shape is None and flips[ai]:
                 raise TypeError(
                     "The source space should have a shape for this transformation!"
                 )
-            origin_offset = shape[bi] if f else 0
+            origin_offset = shape[bi] if flips[ai] else 0
+            origin_offset += offsets[ai]  # add space offset
 
             transformation_mat[ai, 3] = origin_offset
 
@@ -313,11 +335,8 @@ class SpaceConvention:
         (n, 3) numpy array
             Array with the transformed points.
         """
-        # shape = shape if shape is not None else self.shape
 
-        transformation_mat = self.transformation_matrix_to(
-            target
-        )  # , shape=shape)
+        transformation_mat = self.transformation_matrix_to(target)
 
         # A column of zeros is required for the matrix multiplication:
         pts_to_transform = np.insert(pts, 3, np.ones(pts.shape[0]), axis=1)

@@ -240,3 +240,73 @@ def test_zoom():
             ]
         ),
     )
+
+
+@pytest.mark.parametrize(
+    "s_dict, t_dict, f_in, result",
+    [
+        (
+            dict(origin="asl", resolution=(2, 2, 2), shape=(3, 2, 4)),
+            dict(origin="asl", resolution=(1, 1, 1), offset=(2, 2, 2)),
+            dict(to_target_shape=True),
+            np.array(
+                [
+                    [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]],
+                    [[0.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0]],
+                    [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]],
+                ]
+            ),
+        ),
+        (
+            dict(origin="asl", resolution=(2, 2, 2), shape=(3, 2, 4)),
+            dict(origin="asl", resolution=(1, 1, 1), offset=(0, 0, 2)),
+            dict(to_target_shape=True),
+            np.array(
+                [
+                    [[0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]],
+                    [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]],
+                    [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]],
+                ]
+            ),
+        ),
+        (
+            dict(
+                origin="asl",
+                resolution=(1, 1, 1),
+                shape=(3, 2, 4),
+                offset=(1, 1, 1),
+            ),
+            dict(origin="asl", resolution=(1, 1, 1), offset=(2, 2, 2)),
+            dict(to_target_shape=True),
+            np.array(
+                [
+                    [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]],
+                    [[0.0, 0.0, 0.0, 0.0], [0.0, 1.0, 1.0, 0.0]],
+                    [[0.0, 0.0, 0.0, 0.0], [0.0, 1.0, 1.0, 0.0]],
+                ]
+            ),
+        ),
+        (
+            dict(
+                origin="asl",
+                resolution=(1, 1, 1),
+                shape=(3, 2, 4),
+                offset=(1, 1, 1),
+            ),
+            dict(origin="asl", resolution=(1, 1, 1), offset=(2, -1, 2)),
+            dict(to_target_shape=True),
+            np.array(
+                [
+                    [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]],
+                    [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]],
+                    [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]],
+                ]
+            ),
+        ),
+    ],
+)
+def test_offset(s_dict, t_dict, f_in, result):
+    s = SpaceConvention(**s_dict)
+    t = SpaceConvention(**t_dict)
+
+    assert np.allclose(t.map_stack_to(s, np.ones((2, 2, 2)), **f_in), result)
