@@ -3,12 +3,14 @@ from scipy import ndimage as nd
 
 from bg_space.utils import ordered_list_from_set
 import warnings
+from functools import wraps
 
 
 def to_target(method):
     """Decorator for bypassing SpaceConvention creation.
     """
 
+    @wraps(method)
     def decorated(spaceconv_instance, space_description, *args, **kwargs):
 
         # isinstance(..., SpaceConvention) here would fail, so:
