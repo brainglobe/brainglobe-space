@@ -45,9 +45,9 @@ class SpaceConvention:
     Therefore, the Allen space can be described with an instance defined in
     any of the following ways:
 
-    >>> SpaceConvention("ADL")
-    >>> SpaceConvention(["a", "d", "l"])
-    >>> SpaceConvention(["anterior", "dorsal", "left"])
+    >>> SpaceConvention("asl")
+    >>> SpaceConvention(["a", "s", "l"])
+    >>> SpaceConvention(["anterior", "superior", "left"])
 
     This can be convenient for quickly reorient a stack to match different
     axes convention.
@@ -329,7 +329,7 @@ class SpaceConvention:
         ----------
         target : SpaceConvention object
             Target space convention.
-        pts : (n, 3) numpy array
+        pts : (n, 3) list/tuple (of lists/tuples) or numpy array
             Array with the points to be mapped.
 
         Returns
@@ -338,6 +338,10 @@ class SpaceConvention:
             Array with the transformed points.
         """
 
+        # Ensure correct formatting of pts:
+        pts = np.array(pts)
+        if len(pts.shape) == 1:
+            pts = pts[np.newaxis, :]
         transformation_mat = self.transformation_matrix_to(target)
 
         # A column of zeros is required for the matrix multiplication:
