@@ -145,13 +145,15 @@ class SpaceConvention:
 
     @property
     def origin(self):
-        """
-        Returns
-        -------
-        tuple
-            Three letters specifying origin position.
+        """Tuple of three letters specifying origin position.
         """
         return tuple([lim[0] for lim in self.axes_description])
+
+    @property
+    def origin_string(self):
+        """String version of the self.origin description.
+        """
+        return "".join(self.origin)
 
     @to_target
     def map_to(self, target):

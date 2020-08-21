@@ -54,6 +54,7 @@ def test_properties(o, axs_order, origin):
     space = SpaceConvention(o)
     assert space.axes_order == axs_order
     assert space.origin == origin
+    assert space.origin_string == o
 
 
 @pytest.mark.parametrize("valid_origins", ["asl", "sla", "pir"])
