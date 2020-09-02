@@ -228,8 +228,7 @@ class SpaceConvention:
         copy : bool, optional
             If true, stack is copied (default=False).
         to_target_shape : bool, optional
-            If true, stack is padded or cropped to fit target shape. Default
-            is false, but if a non-0 offset is calculated it is set to True.
+            If true, stack is padded or cropped to fit target shape (default=False).
         interp_order : int, optional
             Order of the spline for interpolation in zoom function, used only
             in resampling. Default is 3 (scipy default), use 0 for nearest
