@@ -115,7 +115,9 @@ class SpaceConvention:
                 # If origin specification in possible values:
                 if lim in possible_lims:
                     # Define orientation string with set leftout element:
-                    axs_description.append(ordered_list_from_set(possible_lims, lim))
+                    axs_description.append(
+                        ordered_list_from_set(possible_lims, lim)
+                    )
 
         # Makes sure we have a full orientation:
         assert len(axs_description) == 3
@@ -134,7 +136,9 @@ class SpaceConvention:
         """
         order = []
         for lims in self.axes_description:
-            order += [k for k, val in self.space_axes.items() if lims[0] in val]
+            order += [
+                k for k, val in self.space_axes.items() if lims[0] in val
+            ]
 
         return tuple(order)
 
@@ -300,14 +304,16 @@ class SpaceConvention:
         # Fill it in the required places:
         for ai, bi in enumerate(order):
             # Add the ones for the flips and swaps:
-            transformation_mat[ai, bi] = -scales[ai] if flips[ai] else scales[ai]
+            transformation_mat[ai, bi] = (
+                -scales[ai] if flips[ai] else scales[ai]
+            )
 
             # If flipping is necessary, we also need to translate origin:
             if shape is None and flips[ai]:
                 raise TypeError(
                     "The source space should have a shape for this transformation!"
                 )
-            origin_offset = shape[bi] if flips[ai] else 0
+            origin_offset = shape[bi] * scales[ai] if flips[ai] else 0
             origin_offset += offsets[ai]  # add space offset
 
             transformation_mat[ai, 3] = origin_offset
@@ -380,7 +386,8 @@ class SpaceConvention:
     def plane_normals(self):
         """Dictionary of normals for the planes in the space."""
         return {
-            k: (0, 0, 0)[:i] + (1,) + (0, 0)[i:] for i, k in enumerate(self.sections)
+            k: (0, 0, 0)[:i] + (1,) + (0, 0)[i:]
+            for i, k in enumerate(self.sections)
         }
 
     @property
@@ -396,7 +403,9 @@ class SpaceConvention:
         for idx0, idx1 in self.index_pairs:
             ax0, ax1 = self.axes_description[idx0], self.axes_description[idx1]
             ax0 = ax0[::-1]  # Flip for images
-            axis_labels.append(tuple([self.format_axis_label(ax) for ax in [ax0, ax1]]))
+            axis_labels.append(
+                tuple([self.format_axis_label(ax) for ax in [ax0, ax1]])
+            )
 
         return tuple(axis_labels)
 
@@ -414,7 +423,9 @@ class SpaceConvention:
             Formatted string.
 
         """
-        return "{} - {}".format(*[self.lims_labels[s].capitalize() for s in axis])
+        return "{} - {}".format(
+            *[self.lims_labels[s].capitalize() for s in axis]
+        )
 
     def __repr__(self):
         label_l = "<BGSpace SpaceConvention object>\n"
