@@ -311,3 +311,19 @@ def test_stack_map_offset(s_dict, t_dict, f_in, result):
     t = SpaceConvention(**t_dict)
 
     assert np.allclose(t.map_stack_to(s, np.ones((2, 2, 2)), **f_in), result)
+
+
+def test_points_mapping():
+    points = np.array([[0, 0, 0], [10, 10, 10], [1000, 1000, 1000]])
+    source_space = SpaceConvention(
+        "psl", shape=(1000, 1000, 1000), resolution=(1, 1, 1)
+    )
+    target_space = SpaceConvention(
+        "asl", shape=(100, 100, 100), resolution=(10, 10, 10)
+    )
+    mapped_points = source_space.map_points_to(target_space, points)
+
+    assert np.allclose(
+        mapped_points,
+        np.array([[100.0, 0.0, 0.0], [99.0, 1.0, 1.0], [0.0, 100.0, 100.0]]),
+    )

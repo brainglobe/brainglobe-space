@@ -1,7 +1,3 @@
-"""`bg-space` provides a neat way of defining an anatomical space, and to operate
-stacks and point transformations between anatomical spaces.
-"""
-
 from setuptools import setup, find_namespace_packages
 
 
@@ -11,13 +7,17 @@ with open("requirements.txt") as f:
 with open("requirements_dev.txt") as f:
     requirements_dev = f.read().splitlines()
 
+with open("README.md") as f:
+    long_description = f.read()
+
 setup(
     name="bg_space",
     version="0.4.6",
     description="Anatomical space conventions made easy",
     install_requires=requirements,
     extras_require={"dev": requirements_dev},
-    long_description=__doc__,
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     python_requires=">=3.6",
     packages=find_namespace_packages(exclude=("docs", "tests*")),
     include_package_data=True,
