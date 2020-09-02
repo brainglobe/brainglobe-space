@@ -69,9 +69,7 @@ def test_shape_decorator(valid_origins):
 
     # Check if we can overwrite none or different orientations:
     for args in [(origin, None), (origin, correct_shape[::-1])]:
-        new_shape_mat = SpaceConvention(*args).transformation_matrix_to(
-            target_space
-        )
+        new_shape_mat = SpaceConvention(*args).transformation_matrix_to(target_space)
 
         assert np.allclose(correct_mat, new_shape_mat)
 
@@ -101,9 +99,7 @@ def test_stack_copy(copy_flag):
     source_space = SpaceConvention("asl")
     pre_copy = source_stack.copy()
 
-    mapped_stack = source_space.map_stack_to(
-        "lsp", source_stack, copy=copy_flag
-    )
+    mapped_stack = source_space.map_stack_to("lsp", source_stack, copy=copy_flag)
 
     mapped_stack[0, 1, 1] = 1
 
