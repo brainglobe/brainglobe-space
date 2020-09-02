@@ -7,8 +7,7 @@ from functools import wraps
 
 
 def to_target(method):
-    """Decorator for bypassing SpaceConvention creation.
-    """
+    """Decorator for bypassing SpaceConvention creation."""
 
     @wraps(method)
     def decorated(spaceconv_instance, space_description, *args, **kwargs):
@@ -145,14 +144,12 @@ class SpaceConvention:
 
     @property
     def origin(self):
-        """Tuple of three letters specifying origin position.
-        """
+        """Tuple of three letters specifying origin position."""
         return tuple([lim[0] for lim in self.axes_description])
 
     @property
     def origin_string(self):
-        """String version of the self.origin description.
-        """
+        """String version of the self.origin description."""
         return "".join(self.origin)
 
     @to_target
@@ -369,7 +366,7 @@ class SpaceConvention:
     @property
     def sections(self):
         """Return ordered sections names.
-        
+
         Returns
         -------
         tuple of str
@@ -387,8 +384,7 @@ class SpaceConvention:
 
     @property
     def plane_normals(self):
-        """Dictionary of normals for the planes in the space.
-        """
+        """Dictionary of normals for the planes in the space."""
         return {
             k: (0, 0, 0)[:i] + (1,) + (0, 0)[i:]
             for i, k in enumerate(self.sections)
@@ -397,7 +393,7 @@ class SpaceConvention:
     @property
     def axis_labels(self):
         """Get axis labels for all the projections.
-        
+
         Returns
         -------
         tuple of tuple of str

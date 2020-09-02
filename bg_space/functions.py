@@ -20,7 +20,7 @@ def map_to(source, target):
     tuple
         Sequence of flips to move to target space (in target axis order).
 
-        """
+    """
     return SpaceConvention(source).map_to(target)
 
 
