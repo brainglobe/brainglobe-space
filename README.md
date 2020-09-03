@@ -56,11 +56,11 @@ When you work with a stack, the origin is the upper left corner when you show th
 
 ---
 
-## The `SpaceConvention` class
+## The `AnatomicalSpace` class
 
 Sometimes, together with the stack we have to move a set of points (cell coordinates, meshes, etc.). This introduces the additional complexity of keeping track, together with the axes swaps and flips, of the change of the origin offset.
 
-To handle this situation, we can define a source space using the `SpaceConvention`
+To handle this situation, we can define a source space using the `AnatomicalSpace`
 class, specifying also the stack shape:
 
 ```python
@@ -68,7 +68,7 @@ class, specifying also the stack shape:
 stack = np.random.rand(3, 2, 4)  # a stack in source space
 annotations = np.array([[0, 0, 0], [2, 1, 3]])  # related point annotations
 
-source_space = bg.SpaceConvention(target_origin, stack.shape)
+source_space = bg.AnatomicalSpace(target_origin, stack.shape)
 
 mapped_stack = source_space.map_stack_to("ipr", stack)  # transform the stack
 mapped_annotations = source_space.map_points_to("ipr", annotations)  # transform the points
@@ -79,28 +79,28 @@ The points are transformed through the generation of a transformation matrix.
 Finally, if we want to log this matrix (e.g., to reconstruct the full transformations sequence of a registration), we can get it:
 
 ```python
-target_space = bg.SpaceConvention("ipr", stack.shape)
-transformation_matrix = SpaceConvention.transformation_matrix_to(target_space)
+target_space = bg.AnatomicalSpace("ipr", stack.shape)
+transformation_matrix = AnatomicalSpace.transformation_matrix_to(target_space)
 # equivalent to:
-transformation_matrix = SpaceConvention.transformation_matrix_to("ipr", stack.shape)
+transformation_matrix = AnatomicalSpace.transformation_matrix_to("ipr", stack.shape)
 ```
 
-The target get always be defined as a `bg.SpaceConvention` object, or a valid origin specification plus a shape (the shape is required only if axes flips are required).
+The target get always be defined as a `bg.AnatomicalSpace` object, or a valid origin specification plus a shape (the shape is required only if axes flips are required).
 
 ## Matching space resolutions and offsets
-The `SpaceConvention` class can deal also with stack resampling/padding/cropping. This requires simply specifying values for resolutions and offsets when instantiating a `SpaceConvention` object. Once that is done, using `SpaceConvention.transformation_matrix_to` creating affine transformation matrices from one space to the other will be a piece of cake!
+The `AnatomicalSpace` class can deal also with stack resampling/padding/cropping. This requires simply specifying values for resolutions and offsets when instantiating a `AnatomicalSpace` object. Once that is done, using `AnatomicalSpace.transformation_matrix_to` creating affine transformation matrices from one space to the other will be a piece of cake!
 
 ```python
-source_space = bgs.SpaceConvention("asl", resolution=(2, 1, 2), offset=(1, 0, 0))
-target_space = bgs.SpaceConvention("sal", resolution=(1, 1, 1), offset=(0, 0, 2))
+source_space = bgs.AnatomicalSpace("asl", resolution=(2, 1, 2), offset=(1, 0, 0))
+target_space = bgs.AnatomicalSpace("sal", resolution=(1, 1, 1), offset=(0, 0, 2))
 source_space.transformation_matrix_to(target_space)
 ```
 
 Moreover, we can now use those space objects to resample stacks, and to generate stacks matching a target shape with the correct padding/cropping simply by specifying a target offset:
 
 ```python
-source_space = bgs.SpaceConvention("asl", resolution=(2, 1, 2), offset=(1, 0, 0))
-target_space = bgs.SpaceConvention("asl", resolution=(1, 1, 1), shape=(5, 4, 2))  # we need a target shape
+source_space = bgs.AnatomicalSpace("asl", resolution=(2, 1, 2), offset=(1, 0, 0))
+target_space = bgs.AnatomicalSpace("asl", resolution=(1, 1, 1), shape=(5, 4, 2))  # we need a target shape
 source_space.transformation_matrix_to(target_space, stack, to_target_shape=True)
 ```
 
@@ -110,7 +110,7 @@ source_space.transformation_matrix_to(target_space, stack, to_target_shape=True)
 Finally, another convenient feature of BGSpace is the possibility of iterating easily through the projections of the stack and generate section names and axes labels:
 
 ```python
-sc = bg.SpaceConvention("asl")  # origin for the stack to be plotted
+sc = bg.AnatomicalSpace("asl")  # origin for the stack to be plotted
 
 for i, (plane, labels) in enumerate(zip(sc.sections, sc.axis_labels)):
     axs[i].imshow(stack.mean(i))

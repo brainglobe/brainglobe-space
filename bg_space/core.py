@@ -1,18 +1,18 @@
 import numpy as np
 from scipy import ndimage as nd
-
-from bg_space.utils import ordered_list_from_set
 import warnings
 from functools import wraps
 
+from bg_space.utils import ordered_list_from_set, deprecated
+
 
 def to_target(method):
-    """Decorator for bypassing SpaceConvention creation."""
+    """Decorator for bypassing AnatomicalSpace creation."""
 
     @wraps(method)
     def decorated(spaceconv_instance, space_description, *args, **kwargs):
 
-        # isinstance(..., SpaceConvention) here would fail, so:
+        # isinstance(..., AnatomicalSpace) here would fail, so:
         if not type(space_description) == type(spaceconv_instance):
             # Generate description if input was not one:
             sc_args = {
@@ -20,14 +20,14 @@ def to_target(method):
                 for k in ["shape", "resolution", "offset"]
                 if k in kwargs.keys()
             }
-            space_description = SpaceConvention(space_description, **sc_args)
+            space_description = AnatomicalSpace(space_description, **sc_args)
 
         return method(spaceconv_instance, space_description, *args, **kwargs)
 
     return decorated
 
 
-class SpaceConvention:
+class AnatomicalSpace:
     """Class for describing an anatomical 3D space convention.
     Drops the infinitely confusing (x, y, z) for a more semantic specification
     of the ordering and orientation.
@@ -44,9 +44,9 @@ class SpaceConvention:
     Therefore, the Allen space can be described with an instance defined in
     any of the following ways:
 
-    >>> SpaceConvention("asl")
-    >>> SpaceConvention(["a", "s", "l"])
-    >>> SpaceConvention(["anterior", "superior", "left"])
+    >>> AnatomicalSpace("asl")
+    >>> AnatomicalSpace(["a", "s", "l"])
+    >>> AnatomicalSpace(["anterior", "superior", "left"])
 
     This can be convenient for quickly reorient a stack to match different
     axes convention.
@@ -132,7 +132,7 @@ class SpaceConvention:
         Returns
         -------
         tuple
-            `self.space_specs` keys specifying axes order.
+            `self.space_axes` keys specifying axes order.
         """
         order = []
         for lims in self.axes_description:
@@ -152,6 +152,15 @@ class SpaceConvention:
         """String version of the self.origin description."""
         return "".join(self.origin)
 
+    def get_axis_idx(self, axis):
+        """Returns index from axis name.
+
+        Parameters
+        ----------
+        axis : one of "sagittal", "vertical", "frontal"
+        """
+        return self.axes_order.index(axis)
+
     @to_target
     def map_to(self, target):
         """Find axes reordering, flips, ratios and offsets required to go to
@@ -160,7 +169,7 @@ class SpaceConvention:
 
         Parameters
         ----------
-        target : SpaceConvention object or valid origin
+        target : AnatomicalSpace object or valid origin
             Target space convention.
 
         Returns
@@ -218,7 +227,7 @@ class SpaceConvention:
 
         Parameters
         ----------
-        target : SpaceConvention object
+        target : AnatomicalSpace object
             Target space convention.
         stack : numpy array
             Stack to map from space convention a to space convention b
@@ -284,7 +293,7 @@ class SpaceConvention:
 
         Parameters
         ----------
-        target : SpaceConvention object
+        target : AnatomicalSpace object
             Target space convention.
 
         Returns
@@ -325,7 +334,7 @@ class SpaceConvention:
         """Map points to target space convention.
         Parameters
         ----------
-        target : SpaceConvention object
+        target : AnatomicalSpace object
             Target space convention.
         pts : (n, 3) list/tuple (of lists/tuples) or numpy array
             Array with the points to be mapped.
@@ -428,7 +437,7 @@ class SpaceConvention:
         )
 
     def __repr__(self):
-        label_l = "<BGSpace SpaceConvention object>\n"
+        label_l = "<BGSpace AnatomicalSpace object>\n"
         origin_l = "origin: {}\n".format(
             tuple([self.lims_labels[s].capitalize() for s in self.origin])
         )
@@ -440,8 +449,28 @@ class SpaceConvention:
         return label_l + origin_l + sections_l + shape_l
 
     def __iter__(self):
-        """Iter over origin, so that we can pass a SpaceConvention to
-        instantiate a SpaceConvention.
+        """Iter over origin, so that we can pass a AnatomicalSpace to
+        instantiate a AnatomicalSpace.
         """
         for s in self.origin:
             yield s
+
+    def __eq__(self, other):
+        """Two spaces are identical if matching in origin, shape, resolution, and offset.
+        """
+        if not isinstance(other, AnatomicalSpace):
+            return NotImplemented
+        return all(
+            [
+                getattr(self, attr) == getattr(other, attr)
+                for attr in ["origin", "shape", "resolution", "offset"]
+            ]
+        )
+
+
+@deprecated(
+    "SpaceConvention will be removed from v0.6. "
+    "Use bg_space.AnatomicalSpace instead"
+)
+class SpaceConvention(AnatomicalSpace):
+    pass

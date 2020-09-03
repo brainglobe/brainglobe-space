@@ -1,6 +1,6 @@
 import numpy as np
 
-from bg_space import SpaceConvention
+from bg_space import AnatomicalSpace
 
 char_add = np.core.defchararray.add
 
@@ -11,7 +11,7 @@ def create_label_array(origin, half_shape):
     Parameters
     ----------
     origin : str
-        Valid origin for a SpaceConvention obj.
+        Valid origin for a AnatomicalSpace obj.
     half_shape : tuple
         Half shape of the stack on each axis.
 
@@ -21,21 +21,10 @@ def create_label_array(origin, half_shape):
         array with elements describing an anatomical location (e.g. "als", "pir)
 
     """
-    space = SpaceConvention(origin)
+    space = AnatomicalSpace(origin)
     arrays = []
     for lims, hs in zip(space.axes_description, half_shape):
-        arrays.append(
-            np.array(
-                [
-                    lims[0],
-                ]
-                * hs
-                + [
-                    lims[1],
-                ]
-                * hs
-            )
-        )
+        arrays.append(np.array([lims[0],] * hs + [lims[1],] * hs))
 
     x, y, z = np.meshgrid(*arrays, indexing="ij")
 

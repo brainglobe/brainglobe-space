@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from .utils import create_label_array
-from bg_space import SpaceConvention
+from bg_space import AnatomicalSpace, SpaceConvention
 
 valid_origins = ["asl", "ipl", "pli"]
 some_shapes = [(3, 3, 3), (15, 5, 10)]
@@ -21,8 +21,13 @@ some_shapes = [(3, 3, 3), (15, 5, 10)]
     ],
 )
 def test_origin_types(origin):
-    space = SpaceConvention(origin)
+    space = AnatomicalSpace(origin)
     assert space.axes_description == ("rl", "si", "ap")
+
+
+def test_spaceconvention():
+    with pytest.deprecated_call():
+        assert SpaceConvention("asl") == AnatomicalSpace("asl")
 
 
 @pytest.mark.parametrize(
@@ -37,8 +42,21 @@ def test_origin_types(origin):
 )
 def test_init_failures(origin, errortype):
     with pytest.raises(errortype) as error:
-        _ = SpaceConvention(origin)
+        _ = AnatomicalSpace(origin)
     assert str(errortype).split("'")[1] in str(error)
+
+
+def test_comparison():
+    assert AnatomicalSpace("asl") == AnatomicalSpace("asl")
+    assert AnatomicalSpace("asl") != AnatomicalSpace("als")
+
+    for k in ["offset", "shape", "resolution"]:
+        assert AnatomicalSpace("asl", **{k: [1, 2, 3]}) == AnatomicalSpace(
+            "asl", **{k: [1, 2, 3]}
+        )
+        assert AnatomicalSpace("asl", **{k: [1, 2, 3]}) != AnatomicalSpace(
+            "asl", **{k: [4, 5, 3]}
+        )
 
 
 @pytest.mark.parametrize(
@@ -51,7 +69,7 @@ def test_init_failures(origin, errortype):
     ],
 )
 def test_properties(o, axs_order, origin):
-    space = SpaceConvention(o)
+    space = AnatomicalSpace(o)
     assert space.axes_order == axs_order
     assert space.origin == origin
     assert space.origin_string == o
@@ -62,14 +80,14 @@ def test_properties(o, axs_order, origin):
 def test_shape_decorator(valid_origins):
     correct_shape = (20, 30, 10)
     origin = "asl"
-    source_space = SpaceConvention(origin, correct_shape)
+    source_space = AnatomicalSpace(origin, correct_shape)
 
-    target_space = SpaceConvention(origin, correct_shape)
+    target_space = AnatomicalSpace(origin, correct_shape)
     correct_mat = source_space.transformation_matrix_to(target_space)
 
     # Check if we can overwrite none or different orientations:
     for args in [(origin, None), (origin, correct_shape[::-1])]:
-        new_shape_mat = SpaceConvention(*args).transformation_matrix_to(
+        new_shape_mat = AnatomicalSpace(*args).transformation_matrix_to(
             target_space
         )
 
@@ -85,10 +103,10 @@ def test_stack_flips(src_o, tgt_o, src_shape, tgt_shape):
     source_stack = create_label_array(src_o, src_shape)
     target_stack = create_label_array(tgt_o, tgt_shape)
 
-    source_space = SpaceConvention(src_o)
+    source_space = AnatomicalSpace(src_o)
 
-    # Test both mapping to SpaceConvention obj and origin with decorator:
-    for target_space in [tgt_o, SpaceConvention(tgt_o)]:
+    # Test both mapping to AnatomicalSpace obj and origin with decorator:
+    for target_space in [tgt_o, AnatomicalSpace(tgt_o)]:
         # Check all corners of the mapped stack:
         mapped_stack = source_space.map_stack_to(target_space, source_stack)
         for indexes in itertools.product([0, -1], repeat=3):
@@ -98,7 +116,7 @@ def test_stack_flips(src_o, tgt_o, src_shape, tgt_shape):
 @pytest.mark.parametrize("copy_flag", [True, False])
 def test_stack_copy(copy_flag):
     source_stack = np.random.rand(3, 4, 2)
-    source_space = SpaceConvention("asl")
+    source_space = AnatomicalSpace("asl")
     pre_copy = source_stack.copy()
 
     mapped_stack = source_space.map_stack_to(
@@ -120,10 +138,10 @@ def test_point_transform(src_o, tgt_o, src_shape, tgt_shape):
     source_stack = create_label_array(src_o, src_shape)
 
     # Create spaces objects:
-    source_space = SpaceConvention(src_o, shape=[s * 2 for s in src_shape])
+    source_space = AnatomicalSpace(src_o, shape=[s * 2 for s in src_shape])
 
-    # Test both mapping to SpaceConvention obj and origin with decorator:
-    for target_space in [tgt_o, SpaceConvention(tgt_o)]:
+    # Test both mapping to AnatomicalSpace obj and origin with decorator:
+    for target_space in [tgt_o, AnatomicalSpace(tgt_o)]:
 
         # Define grid of points sampling 4 points per axis:
         grid_positions = [[1, s - 1, s + 1, s * 2 - 1] for s in src_shape]
@@ -141,7 +159,7 @@ def test_point_transform(src_o, tgt_o, src_shape, tgt_shape):
 
 
 def test_point_transform_fail():
-    s = SpaceConvention("asl")
+    s = AnatomicalSpace("asl")
     with pytest.raises(TypeError) as error:
         s.map_points_to("psl", np.array([[0, 1, 2], [0, 1, 2]]))
     assert "The source space should have a shape" in str(error)
@@ -195,7 +213,7 @@ def test_point_transform_fail():
     ],
 )
 def test_labels_iterations(orig, lab, sect, normals):
-    space = SpaceConvention(orig)
+    space = AnatomicalSpace(orig)
 
     assert space.axis_labels == lab
     assert space.sections == sect
@@ -204,16 +222,16 @@ def test_labels_iterations(orig, lab, sect, normals):
 
 
 def test_print():
-    print(SpaceConvention("asl"))
+    print(AnatomicalSpace("asl"))
 
 
 def test_iteration():
-    assert list(SpaceConvention("asl")) == ["a", "s", "l"]
+    assert list(AnatomicalSpace("asl")) == ["a", "s", "l"]
 
 
 def test_zoom():
-    s = SpaceConvention("asl", resolution=(1, 1, 1))
-    t = SpaceConvention("asl", resolution=(1, 1, 2))
+    s = AnatomicalSpace("asl", resolution=(1, 1, 1))
+    t = AnatomicalSpace("asl", resolution=(1, 1, 2))
 
     m = np.array(
         [
@@ -307,18 +325,18 @@ def test_zoom():
     ],
 )
 def test_stack_map_offset(s_dict, t_dict, f_in, result):
-    s = SpaceConvention(**s_dict)
-    t = SpaceConvention(**t_dict)
+    s = AnatomicalSpace(**s_dict)
+    t = AnatomicalSpace(**t_dict)
 
     assert np.allclose(t.map_stack_to(s, np.ones((2, 2, 2)), **f_in), result)
 
 
 def test_points_mapping():
     points = np.array([[0, 0, 0], [10, 10, 10], [1000, 1000, 1000]])
-    source_space = SpaceConvention(
+    source_space = AnatomicalSpace(
         "psl", shape=(1000, 1000, 1000), resolution=(1, 1, 1)
     )
-    target_space = SpaceConvention(
+    target_space = AnatomicalSpace(
         "asl", shape=(100, 100, 100), resolution=(10, 10, 10)
     )
     mapped_points = source_space.map_points_to(target_space, points)

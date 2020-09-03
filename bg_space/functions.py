@@ -1,4 +1,4 @@
-from bg_space.core import SpaceConvention
+from bg_space.core import AnatomicalSpace
 
 
 # TODO convert to a smarter way to generate those parsing class' methods:
@@ -21,7 +21,7 @@ def map_to(source, target):
         Sequence of flips to move to target space (in target axis order).
 
     """
-    return SpaceConvention(source).map_to(target)
+    return AnatomicalSpace(source).map_to(target)
 
 
 def map_stack_to(source, target, stack, copy=False):
@@ -42,7 +42,7 @@ def map_stack_to(source, target, stack, copy=False):
     -------
 
     """
-    return SpaceConvention(source).map_stack_to(target, stack, copy=False)
+    return AnatomicalSpace(source).map_stack_to(target, stack, copy=False)
 
 
 def transformation_matrix_to(source, target, shape=None):
@@ -61,7 +61,7 @@ def transformation_matrix_to(source, target, shape=None):
     -------
 
     """
-    return SpaceConvention(source, shape).transformation_matrix_to(target)
+    return AnatomicalSpace(source, shape).transformation_matrix_to(target)
 
 
 def transform_points_to(source, target, points, shape=None):
@@ -83,4 +83,4 @@ def transform_points_to(source, target, points, shape=None):
     (n, 3) numpy array
         Array with the transformed points.
     """
-    return SpaceConvention(source, shape).map_points_to(target, points)
+    return AnatomicalSpace(source, shape).map_points_to(target, points)
