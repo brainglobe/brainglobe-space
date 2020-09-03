@@ -456,8 +456,7 @@ class AnatomicalSpace:
             yield s
 
     def __eq__(self, other):
-        """Two spaces are identical if matching in origin, shape, resolution, and offset.
-        """
+        """Two spaces are identical if matching in origin, shape, resolution, and offset."""
         if not isinstance(other, AnatomicalSpace):
             return NotImplemented
         return all(

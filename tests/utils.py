@@ -24,7 +24,18 @@ def create_label_array(origin, half_shape):
     space = AnatomicalSpace(origin)
     arrays = []
     for lims, hs in zip(space.axes_description, half_shape):
-        arrays.append(np.array([lims[0],] * hs + [lims[1],] * hs))
+        arrays.append(
+            np.array(
+                [
+                    lims[0],
+                ]
+                * hs
+                + [
+                    lims[1],
+                ]
+                * hs
+            )
+        )
 
     x, y, z = np.meshgrid(*arrays, indexing="ij")
 
