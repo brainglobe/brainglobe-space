@@ -80,9 +80,9 @@ Finally, if we want to log this matrix (e.g., to reconstruct the full transforma
 
 ```python
 target_space = bg.AnatomicalSpace("ipr", stack.shape)
-transformation_matrix = AnatomicalSpace.transformation_matrix_to(target_space)
+transformation_matrix = source_space.transformation_matrix_to(target_space)
 # equivalent to:
-transformation_matrix = AnatomicalSpace.transformation_matrix_to("ipr", stack.shape)
+transformation_matrix = source_space.transformation_matrix_to("ipr", stack.shape)
 ```
 
 The target get always be defined as a `bg.AnatomicalSpace` object, or a valid origin specification plus a shape (the shape is required only if axes flips are required).
