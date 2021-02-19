@@ -7,6 +7,8 @@ Anatomical space conventions made easy.
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Coverage Status](https://coveralls.io/repos/github/brainglobe/bg-space/badge.svg)](https://coveralls.io/github/brainglobe/bg-space)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4552537.svg)](https://doi.org/10.5281/zenodo.4552537)
+
 
 
 Working with anatomical images, one often encounters the problem of matching the orientation of stacks with different conventions about axes orientation and order. Moreover, when multiple swaps and flips are involved, it can be annoying to map the same transformations to volumes and points (e.g., coordinates or meshes).
