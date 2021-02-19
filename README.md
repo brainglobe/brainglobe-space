@@ -22,6 +22,8 @@ You can install `bg-space` with:
 pip install bg-space
 ```
 
+If you use `bg-space` for your analyses, please cite it as https://zenodo.org/record/4552537#.YDAFzi1Q2Rs
+
 
 ## Usage
 To define a new anatomical space, it is sufficient to give the directions of the stack origin position:
