@@ -15,15 +15,14 @@ Working with anatomical images, one often encounters the problem of matching the
 
 `bg-space` provides a neat way of defining an anatomical space, and of operating stacks and point transformations between spaces.
 
+If you use `bg-space` for your analyses, please cite its Zenodo DOI https://zenodo.org/record/4552537#.YDAFzi1Q2Rs!
+
 ## Installation
 
 You can install `bg-space` with:
 ```
 pip install bg-space
 ```
-
-If you use `bg-space` for your analyses, please cite it as https://zenodo.org/record/4552537#.YDAFzi1Q2Rs
-
 
 ## Usage
 To define a new anatomical space, it is sufficient to give the directions of the stack origin position:
