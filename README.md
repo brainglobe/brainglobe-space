@@ -124,3 +124,6 @@ for i, (plane, labels) in enumerate(zip(sc.sections, sc.axis_labels)):
 ```
 
 ![](/docs/img/projections.png)
+
+## Contributing
+Contributions are very welcome. Please see the [contributing guide](https://github.com/brainglobe/.github/blob/main/CONTRIBUTING.md).
