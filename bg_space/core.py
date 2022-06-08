@@ -288,13 +288,15 @@ class AnatomicalSpace:
         return stack
 
     @to_target
-    def transformation_matrix_to(self, target):
+    def transformation_matrix_to(self, target, infer_source_shape=False):
         """Find transformation matrix going to target space convention.
 
         Parameters
         ----------
         target : AnatomicalSpace object
             Target space convention.
+        infer_source_shape : bool
+            Infer shape of the source space from the target space if the source space does not have a shape
 
         Returns
         -------
@@ -302,6 +304,11 @@ class AnatomicalSpace:
         """
         # shape = shape if shape is not None else self.shape
         shape = self.shape
+
+        # Infer shape of source space from target space
+        if infer_source_shape and shape is None and target.shape is not None:
+            stack = np.empty(target.shape, dtype=bool)
+            shape = target.map_stack_to(self, stack, interp_order=0).shape
 
         # Find axes order and flips:
         order, flips, scales, offsets = self.map_to(target)
@@ -330,7 +337,7 @@ class AnatomicalSpace:
         return transformation_mat
 
     @to_target
-    def map_points_to(self, target, pts):
+    def map_points_to(self, target, pts, infer_source_shape=False):
         """Map points to target space convention.
         Parameters
         ----------
@@ -338,7 +345,8 @@ class AnatomicalSpace:
             Target space convention.
         pts : (n, 3) list/tuple (of lists/tuples) or numpy array
             Array with the points to be mapped.
-
+        infer_source_shape : bool
+            Infer shape of the source space from the target space if the source space does not have a shape
         Returns
         -------
         (n, 3) numpy array
@@ -349,7 +357,9 @@ class AnatomicalSpace:
         pts = np.array(pts)
         if len(pts.shape) == 1:
             pts = pts[np.newaxis, :]
-        transformation_mat = self.transformation_matrix_to(target)
+        transformation_mat = self.transformation_matrix_to(
+            target, infer_source_shape
+        )
 
         # A column of zeros is required for the matrix multiplication:
         pts_to_transform = np.insert(pts, 3, np.ones(pts.shape[0]), axis=1)
