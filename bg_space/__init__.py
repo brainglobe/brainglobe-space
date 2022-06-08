@@ -1,5 +1,5 @@
 __author__ = """Luigi Petrucco @brainglobe"""
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 
 from bg_space.core import AnatomicalSpace, SpaceConvention
 from bg_space.functions import (

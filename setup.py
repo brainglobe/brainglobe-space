@@ -12,7 +12,7 @@ with open("README.md") as f:
 
 setup(
     name="bg_space",
-    version="0.5.0",
+    version="0.6.0",
     description="Anatomical space conventions made easy",
     install_requires=requirements,
     extras_require={"dev": requirements_dev},
