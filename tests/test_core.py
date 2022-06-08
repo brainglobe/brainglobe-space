@@ -345,3 +345,16 @@ def test_points_mapping():
         mapped_points,
         np.array([[100.0, 0.0, 0.0], [99.0, 1.0, 1.0], [0.0, 100.0, 100.0]]),
     )
+
+
+def test_points_mapping_infer_source_shape():
+    points = np.array([[0, 0, 0], [200, 0, 0], [0, 300, 0], [0, 0, 100]])
+    source_space = AnatomicalSpace("srp")
+    target_space = AnatomicalSpace("asl", shape=(100, 200, 300))
+    mapped_points = source_space.map_points_to(
+        target_space, points, infer_source_shape=True
+    )
+    assert np.allclose(
+        mapped_points,
+        np.array([[100, 0, 300], [100, 200, 300], [100, 0, 0], [0, 0, 300]]),
+    )
