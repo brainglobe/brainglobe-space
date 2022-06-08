@@ -303,6 +303,11 @@ class AnatomicalSpace:
         # shape = shape if shape is not None else self.shape
         shape = self.shape
 
+        # Infer shape of source space from target space
+        if shape is None and target.shape is not None:
+            stack = np.empty(target.shape, dtype=bool)
+            shape = target.map_stack_to(self, stack, interp_order=0).shape
+
         # Find axes order and flips:
         order, flips, scales, offsets = self.map_to(target)
 
