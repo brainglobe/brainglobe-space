@@ -152,7 +152,7 @@ def test_point_transform(src_o, tgt_o, src_shape, tgt_shape):
 
         # Check that point coordinates keep the same values:
         for p_source, p_mapped in zip(source_pts, mapped_pts):
-            p_s, p_m = [tuple(p.astype(np.int)) for p in [p_source, p_mapped]]
+            p_s, p_m = [tuple(p.astype(int)) for p in [p_source, p_mapped]]
 
             assert source_stack[p_s] == mapped_stack[p_m]
 
