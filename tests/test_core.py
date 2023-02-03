@@ -142,7 +142,6 @@ def test_point_transform(src_o, tgt_o, src_shape, tgt_shape):
 
     # Test both mapping to AnatomicalSpace obj and origin with decorator:
     for target_space in [tgt_o, AnatomicalSpace(tgt_o)]:
-
         # Define grid of points sampling 4 points per axis:
         grid_positions = [[1, s - 1, s + 1, s * 2 - 1] for s in src_shape]
         source_pts = np.array(list(itertools.product(*grid_positions)))
@@ -153,7 +152,7 @@ def test_point_transform(src_o, tgt_o, src_shape, tgt_shape):
 
         # Check that point coordinates keep the same values:
         for p_source, p_mapped in zip(source_pts, mapped_pts):
-            p_s, p_m = [tuple(p.astype(np.int)) for p in [p_source, p_mapped]]
+            p_s, p_m = [tuple(p.astype(int)) for p in [p_source, p_mapped]]
 
             assert source_stack[p_s] == mapped_stack[p_m]
 
@@ -238,7 +237,7 @@ def test_zoom():
             [[1, 9, 15, 17, 20, 25], [1, 9, 15, 17, 20, 25]],
             [[2, 18, 30, 34, 40, 50], [2, 18, 30, 34, 40, 50]],
         ]
-    ).astype(np.float)
+    ).astype(float)
 
     assert np.allclose(
         s.map_stack_to(t, m),

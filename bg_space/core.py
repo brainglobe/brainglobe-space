@@ -11,7 +11,6 @@ def to_target(method):
 
     @wraps(method)
     def decorated(spaceconv_instance, space_description, *args, **kwargs):
-
         # isinstance(..., AnatomicalSpace) here would fail, so:
         if not type(space_description) == type(spaceconv_instance):
             # Generate description if input was not one:
@@ -96,7 +95,6 @@ class AnatomicalSpace:
     }
 
     def __init__(self, origin, shape=None, resolution=None, offset=(0, 0, 0)):
-
         self.shape = shape
         self.resolution = resolution
         self.offset = offset
@@ -108,10 +106,8 @@ class AnatomicalSpace:
 
         # Loop over origin specification:
         for lim in origin:
-
             # Loop over possible axes and origin values:
             for k, possible_lims in self.space_axes.items():
-
                 # If origin specification in possible values:
                 if lim in possible_lims:
                     # Define orientation string with set leftout element:
