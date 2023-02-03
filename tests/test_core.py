@@ -142,7 +142,6 @@ def test_point_transform(src_o, tgt_o, src_shape, tgt_shape):
 
     # Test both mapping to AnatomicalSpace obj and origin with decorator:
     for target_space in [tgt_o, AnatomicalSpace(tgt_o)]:
-
         # Define grid of points sampling 4 points per axis:
         grid_positions = [[1, s - 1, s + 1, s * 2 - 1] for s in src_shape]
         source_pts = np.array(list(itertools.product(*grid_positions)))
