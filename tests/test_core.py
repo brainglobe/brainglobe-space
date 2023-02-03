@@ -237,7 +237,7 @@ def test_zoom():
             [[1, 9, 15, 17, 20, 25], [1, 9, 15, 17, 20, 25]],
             [[2, 18, 30, 34, 40, 50], [2, 18, 30, 34, 40, 50]],
         ]
-    ).astype(np.float)
+    ).astype(float)
 
     assert np.allclose(
         s.map_stack_to(t, m),
