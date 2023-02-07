@@ -1,10 +1,11 @@
 import itertools
-import numpy as np
 
+import numpy as np
 import pytest
 
-from .utils import create_label_array
 from bg_space import AnatomicalSpace, SpaceConvention
+
+from .utils import create_label_array
 
 valid_origins = ["asl", "ipl", "pli"]
 some_shapes = [(3, 3, 3), (15, 5, 10)]

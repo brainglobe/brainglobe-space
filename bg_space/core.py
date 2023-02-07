@@ -1,9 +1,10 @@
-import numpy as np
-from scipy import ndimage as nd
 import warnings
 from functools import wraps
 
-from bg_space.utils import ordered_list_from_set, deprecated
+import numpy as np
+from scipy import ndimage as nd
+
+from bg_space.utils import deprecated, ordered_list_from_set
 
 
 def to_target(method):
