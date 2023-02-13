@@ -1,9 +1,10 @@
-import numpy as np
-from scipy import ndimage as nd
 import warnings
 from functools import wraps
 
-from bg_space.utils import ordered_list_from_set, deprecated
+import numpy as np
+from scipy import ndimage as nd
+
+from bg_space.utils import deprecated, ordered_list_from_set
 
 
 def to_target(method):
@@ -35,7 +36,8 @@ class AnatomicalSpace:
     "to which anatomical direction the 0 of the stack correspond along each
     of the 3 dimensions".
 
-    E.g., in the Allen Brain (http://help.brain-map.org/display/mousebrain/API):
+    E.g., in the Allen Brain
+    (http://help.brain-map.org/display/mousebrain/API):
         0. first axis goes from Anterior to posterior;
         1. second axis goes from Dorsal to ventral;
         2. third axis goes from Left to right.
@@ -50,8 +52,8 @@ class AnatomicalSpace:
     This can be convenient for quickly reorient a stack to match different
     axes convention.
 
-    More advanced usage include resampling in new space resolution, and addition
-    of offsets, useful for stack cropping/padding.
+    More advanced usage include resampling in new space resolution, and
+    addition of offsets, useful for stack cropping/padding.
     Note however that combination of these features with very differently
     oriented stacks (eg, with different axes directions) can be confusing!
 
@@ -119,7 +121,8 @@ class AnatomicalSpace:
         assert len(axs_description) == 3
         assert len(axs_description) == len(set(axs_description))
 
-        # Univoke description of the space convention with a tuple of axes lims:
+        # Univoke description of the space convention with a tuple of axes
+        # lims:
         self.axes_description = tuple(axs_description)
 
     @property
@@ -230,7 +233,8 @@ class AnatomicalSpace:
         copy : bool, optional
             If true, stack is copied (default=False).
         to_target_shape : bool, optional
-            If true, stack is padded or cropped to fit target shape (default=False).
+            If true, stack is padded or cropped to fit target shape
+            (default=False).
         interp_order : int, optional
             Order of the spline for interpolation in zoom function, used only
             in resampling. Default is 3 (scipy default), use 0 for nearest
@@ -269,7 +273,8 @@ class AnatomicalSpace:
                 # Warn if stack to be mapped is out of target shape:
                 if o >= t_sh or (o < 0 and -o >= s_sh):
                     warnings.warn(
-                        "Stack is out of target shape on at least one axis, mapped stack will be empty!"
+                        "Stack is out of target shape on at least one axis, "
+                        "mapped stack will be empty!"
                     )
                     return empty_stack
                 else:
@@ -292,7 +297,8 @@ class AnatomicalSpace:
         target : AnatomicalSpace object
             Target space convention.
         infer_source_shape : bool
-            Infer shape of the source space from the target space if the source space does not have a shape
+            Infer shape of the source space from the target space if the
+            source space does not have a shape
 
         Returns
         -------
@@ -323,7 +329,8 @@ class AnatomicalSpace:
             # If flipping is necessary, we also need to translate origin:
             if shape is None and flips[ai]:
                 raise TypeError(
-                    "The source space should have a shape for this transformation!"
+                    "The source space should have a shape for this "
+                    "transformation!"
                 )
             origin_offset = shape[bi] * scales[ai] if flips[ai] else 0
             origin_offset += offsets[ai]  # add space offset
@@ -342,7 +349,8 @@ class AnatomicalSpace:
         pts : (n, 3) list/tuple (of lists/tuples) or numpy array
             Array with the points to be mapped.
         infer_source_shape : bool
-            Infer shape of the source space from the target space if the source space does not have a shape
+            Infer shape of the source space from the target space if the
+            source space does not have a shape
         Returns
         -------
         (n, 3) numpy array
@@ -462,7 +470,10 @@ class AnatomicalSpace:
             yield s
 
     def __eq__(self, other):
-        """Two spaces are identical if matching in origin, shape, resolution, and offset."""
+        """
+        Two spaces are identical if matching in origin, shape, resolution, and
+        offset.
+        """
         if not isinstance(other, AnatomicalSpace):
             return NotImplemented
         return all(

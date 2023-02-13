@@ -1,7 +1,7 @@
 black
-pytest-cov
-pytest
-gitpython
 coveralls
-pre-commit
+gitpython
 nox
+pre-commit
+pytest
+pytest-cov

@@ -18,7 +18,8 @@ def create_label_array(origin, half_shape):
     Returns
     -------
     np.array of chars
-        array with elements describing an anatomical location (e.g. "als", "pir)
+        array with elements describing an anatomical location
+        (e.g. "als", "pir)
 
     """
     space = AnatomicalSpace(origin)

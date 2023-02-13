@@ -1,14 +1,13 @@
 import numpy as np
-
 import pytest
 
-from bg_space.functions import (
-    map_to,
-    map_stack_to,
-    transformation_matrix_to,
-    transform_points_to,
-)
 from bg_space.core import AnatomicalSpace
+from bg_space.functions import (
+    map_stack_to,
+    map_to,
+    transform_points_to,
+    transformation_matrix_to,
+)
 
 valid_origins = ["asl", "ipl", "pls"]
 

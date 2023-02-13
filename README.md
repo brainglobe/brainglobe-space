@@ -117,7 +117,7 @@ sc = bg.AnatomicalSpace("asl")  # origin for the stack to be plotted
 
 for i, (plane, labels) in enumerate(zip(sc.sections, sc.axis_labels)):
     axs[i].imshow(stack.mean(i))
-    
+
     axs[i].set_title(f"{plane.capitalize()} view")
     axs[i].set_ylabel(labels[0])
     axs[i].set_xlabel(labels[1])
