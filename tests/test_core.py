@@ -1,4 +1,5 @@
 import itertools
+from contextlib import nullcontext
 
 import numpy as np
 import pytest
@@ -328,7 +329,20 @@ def test_stack_map_offset(s_dict, t_dict, f_in, result):
     s = AnatomicalSpace(**s_dict)
     t = AnatomicalSpace(**t_dict)
 
-    assert np.allclose(t.map_stack_to(s, np.ones((2, 2, 2)), **f_in), result)
+    if np.any(np.array(t_dict["offset"]) < 0):
+        ctx = pytest.warns(
+            UserWarning,
+            match=(
+                "Stack is out of target shape on at least one axis, "
+                "mapped stack will be empty"
+            ),
+        )
+    else:
+        ctx = nullcontext()
+
+    with ctx:
+        mapped = t.map_stack_to(s, np.ones((2, 2, 2)), **f_in)
+    assert np.allclose(mapped, result)
 
 
 def test_points_mapping():
