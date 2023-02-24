@@ -1,5 +1,56 @@
+[project]
+name = "bg_space"
+description = "Anatomical space conventions made easy"
+readme = "README.md"
+authors = [
+    {name = "Luigi Petrucco", email = "luigi.petrucco@gmail.com"},
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "numpy",
+    "scipy",
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/brainglobe/bg-space"
+
+[project.optional-dependencies]
+dev = [
+    "gitpython",
+    "pre-commit",
+    "pytest",
+    "pytest-cov",
+]
+
+[build-system]
+requires = [
+    "setuptools>=45",
+    "wheel",
+    "setuptools_scm[toml]>=6.2",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["bg_space*"]
+
+[tool.setuptools_scm]
+
 [tool.black]
-target-version = ['py38', 'py39', 'py310']
+target-version = ['py38', 'py39', 'py310', 'py311']
 skip-string-normalization = false
 line-length = 79
 
