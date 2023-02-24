@@ -1,7 +1,0 @@
-black
-coveralls
-gitpython
-nox
-pre-commit
-pytest
-pytest-cov
