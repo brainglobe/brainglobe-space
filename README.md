@@ -1,4 +1,12 @@
+# `bg-space` has become `brainglobe-space`
+
+To continue receiving updates, please switch to using [`brainglobe-space`](https://github.com/brainglobe/brainglobe-space) instead of this package.
+`bg-space` will no longer be receiving updates, and has been replaced by `brainglobe-space` in all other aspects of the BrainGlobe tool suite.
+
+Old README.md contents are below.
+
 # BG-Space
+
 Anatomical space conventions made easy.
 
 [![Python Version](https://img.shields.io/pypi/pyversions/bg-space.svg)](https://pypi.org/project/bg-space)
@@ -9,8 +17,6 @@ Anatomical space conventions made easy.
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4552537.svg)](https://doi.org/10.5281/zenodo.4552537)
 
-
-
 Working with anatomical images, one often encounters the problem of matching the orientation of stacks with different conventions about axes orientation and order. Moreover, when multiple swaps and flips are involved, it can be annoying to map the same transformations to volumes and points (e.g., coordinates or meshes).
 
 `bg-space` provides a neat way of defining an anatomical space, and of operating stacks and point transformations between spaces.
@@ -20,11 +26,13 @@ If you use `bg-space` for your analyses, please cite its Zenodo DOI https://zeno
 ## Installation
 
 You can install `bg-space` with:
-```
+
+```bash
 pip install bg-space
 ```
 
 ## Usage
+
 To define a new anatomical space, it is sufficient to give the directions of the stack origin position:
 
 ```python
@@ -41,7 +49,6 @@ stack = np.random.rand(3, 2, 4)
 
 mapped_stack = bg.map_stack_to(source_origin, target_origin, stack)
 ```
-
 
 The transformation is handled only with numpy index operations; *i.e.*, no complex
 image affine transformations are applied. This is often useful as the preparatory step for starting any kind of image registration.
