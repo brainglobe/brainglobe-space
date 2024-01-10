@@ -1,8 +1,8 @@
 from warnings import warn
 
 warn(
-    DeprecationWarning,
     "bg-space has been retired from the BrainGlobe tool suite and replaced by brainglobe-space. We recommend you uninstall this package and install brainglobe-space instead: https://github.com/brainglobe/brainglobe-space",
+    DeprecationWarning,
 )
 
 __author__ = """Luigi Petrucco @brainglobe"""
