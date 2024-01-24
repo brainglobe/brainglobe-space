@@ -1,6 +1,6 @@
 import numpy as np
 
-from bg_space import AnatomicalSpace
+from brainglobe_space import AnatomicalSpace
 
 char_add = np.core.defchararray.add
 

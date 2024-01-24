@@ -1,11 +1,11 @@
-# BG-Space
+# brainglobe-space
 Anatomical space conventions made easy.
 
-[![Python Version](https://img.shields.io/pypi/pyversions/bg-space.svg)](https://pypi.org/project/bg-space)
-[![PyPI](https://img.shields.io/pypi/v/bg-space.svg)](https://pypi.org/project/bg-space)
-[![Build Status](https://travis-ci.com/brainglobe/bg-space.svg?branch=master)](https://travis-ci.com/brainglobe/bg-space)
+[![Python Version](https://img.shields.io/pypi/pyversions/brainglobe-space.svg)](https://pypi.org/project/brainglobe-space)
+[![PyPI](https://img.shields.io/pypi/v/brainglobe-space.svg)](https://pypi.org/project/brainglobe-space)
+[![Build Status](https://travis-ci.com/brainglobe/brainglobe-space.svg?branch=master)](https://travis-ci.com/brainglobe/brainglobe-space)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Coverage Status](https://coveralls.io/repos/github/brainglobe/bg-space/badge.svg)](https://coveralls.io/github/brainglobe/bg-space)
+[![Coverage Status](https://coveralls.io/repos/github/brainglobe/brainglobe-space/badge.svg)](https://coveralls.io/github/brainglobe/brainglobe-space)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4552537.svg)](https://doi.org/10.5281/zenodo.4552537)
 
@@ -13,15 +13,15 @@ Anatomical space conventions made easy.
 
 Working with anatomical images, one often encounters the problem of matching the orientation of stacks with different conventions about axes orientation and order. Moreover, when multiple swaps and flips are involved, it can be annoying to map the same transformations to volumes and points (e.g., coordinates or meshes).
 
-`bg-space` provides a neat way of defining an anatomical space, and of operating stacks and point transformations between spaces.
+`brainglobe-space` provides a neat way of defining an anatomical space, and of operating stacks and point transformations between spaces.
 
-If you use `bg-space` for your analyses, please cite its Zenodo DOI https://zenodo.org/record/4552537#.YDAFzi1Q2Rs!
+If you use `brainglobe-space` for your analyses, please cite its Zenodo DOI https://zenodo.org/record/4552537#.YDAFzi1Q2Rs!
 
 ## Installation
 
-You can install `bg-space` with:
+You can install `brainglobe-space` with:
 ```
-pip install bg-space
+pip install brainglobe-space
 ```
 
 ## Usage
@@ -35,7 +35,7 @@ target_origin = ("Inferior", "Posterior", "Right")
 A stack can be then easily transformed from the source to the target space:
 
 ```python
-import bg_space as bg
+import brainglobe_space as bg
 import numpy as np
 stack = np.random.rand(3, 2, 4)
 

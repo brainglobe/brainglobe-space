@@ -1,4 +1,4 @@
-from bg_space.core import AnatomicalSpace
+from brainglobe_space.core import AnatomicalSpace
 
 
 # TODO convert to a smarter way to generate those parsing class' methods:
