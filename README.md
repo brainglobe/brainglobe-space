@@ -1,6 +1,3 @@
-# brainglobe-space
-Anatomical space conventions made easy.
-
 [![Python Version](https://img.shields.io/pypi/pyversions/brainglobe-space.svg)](https://pypi.org/project/brainglobe-space)
 [![PyPI](https://img.shields.io/pypi/v/brainglobe-space.svg)](https://pypi.org/project/brainglobe-space)
 [![Build Status](https://travis-ci.com/brainglobe/brainglobe-space.svg?branch=master)](https://travis-ci.com/brainglobe/brainglobe-space)
@@ -9,22 +6,26 @@ Anatomical space conventions made easy.
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4552537.svg)](https://doi.org/10.5281/zenodo.4552537)
 
+# brainglobe-space
 
+Anatomical space conventions made easy.
 
 Working with anatomical images, one often encounters the problem of matching the orientation of stacks with different conventions about axes orientation and order. Moreover, when multiple swaps and flips are involved, it can be annoying to map the same transformations to volumes and points (e.g., coordinates or meshes).
 
 `brainglobe-space` provides a neat way of defining an anatomical space, and of operating stacks and point transformations between spaces.
 
-If you use `brainglobe-space` for your analyses, please cite its Zenodo DOI https://zenodo.org/record/4552537#.YDAFzi1Q2Rs!
+If you use `brainglobe-space` for your analyses, please cite its [Zenodo DOI](https://zenodo.org/record/4552537#.YDAFzi1Q2Rs!) <https://zenodo.org/record/4552537#.YDAFzi1Q2Rs!>
 
 ## Installation
 
 You can install `brainglobe-space` with:
-```
+
+```bash
 pip install brainglobe-space
 ```
 
 ## Usage
+
 To define a new anatomical space, it is sufficient to give the directions of the stack origin position:
 
 ```python
@@ -42,7 +43,6 @@ stack = np.random.rand(3, 2, 4)
 mapped_stack = bg.map_stack_to(source_origin, target_origin, stack)
 ```
 
-
 The transformation is handled only with numpy index operations; *i.e.*, no complex
 image affine transformations are applied. This is often useful as the preparatory step for starting any kind of image registration.
 
@@ -53,7 +53,8 @@ mapped_stack = bg.map_stack_to("lsa", "ipr", stack)
 ```
 
 ---
-**NOTE**
+
+## NOTE
 
 When you work with a stack, the origin is the upper left corner when you show the first element `stack[0, :, :]` with matplotlib or when you open the stack with ImageJ. First dimension is the one that you are slicing, the second the height of the image, and the third the width of the image.
 
@@ -77,7 +78,6 @@ mapped_stack = source_space.map_stack_to("ipr", stack)  # transform the stack
 mapped_annotations = source_space.map_points_to("ipr", annotations)  # transform the points
 ```
 
-
 The points are transformed through the generation of a transformation matrix.
 Finally, if we want to log this matrix (e.g., to reconstruct the full transformations sequence of a registration), we can get it:
 
@@ -91,6 +91,7 @@ transformation_matrix = source_space.transformation_matrix_to("ipr", stack.shape
 The target get always be defined as a `bg.AnatomicalSpace` object, or a valid origin specification plus a shape (the shape is required only if axes flips are required).
 
 ## Matching space resolutions and offsets
+
 The `AnatomicalSpace` class can deal also with stack resampling/padding/cropping. This requires simply specifying values for resolutions and offsets when instantiating a `AnatomicalSpace` object. Once that is done, using `AnatomicalSpace.transformation_matrix_to` creating affine transformation matrices from one space to the other will be a piece of cake!
 
 ```python
@@ -107,7 +108,6 @@ target_space = bgs.AnatomicalSpace("asl", resolution=(1, 1, 1), shape=(5, 4, 2))
 source_space.transformation_matrix_to(target_space, stack, to_target_shape=True)
 ```
 
-
 ## Easy iteration over projections
 
 Finally, another convenient feature of BGSpace is the possibility of iterating easily through the projections of the stack and generate section names and axes labels:
@@ -123,7 +123,8 @@ for i, (plane, labels) in enumerate(zip(sc.sections, sc.axis_labels)):
     axs[i].set_xlabel(labels[1])
 ```
 
-![](/docs/img/projections.png)
+![Projection illustrations](/docs/img/projections.png)
 
 ## Contributing
+
 Contributions are very welcome. Please see the [developers guide](https://brainglobe.info/developers/index.html).
