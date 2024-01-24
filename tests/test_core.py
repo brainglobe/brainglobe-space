@@ -4,7 +4,7 @@ from contextlib import nullcontext
 import numpy as np
 import pytest
 
-from bg_space import AnatomicalSpace, SpaceConvention
+from brainglobe_space import AnatomicalSpace, SpaceConvention
 
 from .utils import create_label_array
 

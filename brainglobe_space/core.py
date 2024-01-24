@@ -4,7 +4,7 @@ from functools import wraps
 import numpy as np
 from scipy import ndimage as nd
 
-from bg_space.utils import deprecated, ordered_list_from_set
+from brainglobe_space.utils import deprecated, ordered_list_from_set
 
 
 def to_target(method):
@@ -486,7 +486,7 @@ class AnatomicalSpace:
 
 @deprecated(
     "SpaceConvention will be removed from v0.6. "
-    "Use bg_space.AnatomicalSpace instead"
+    "Use brainglobe_space.AnatomicalSpace instead"
 )
 class SpaceConvention(AnatomicalSpace):
     pass
