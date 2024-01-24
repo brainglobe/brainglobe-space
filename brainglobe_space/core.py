@@ -2,9 +2,8 @@ import warnings
 from functools import wraps
 
 import numpy as np
-from scipy import ndimage as nd
-
 from bg_space.utils import deprecated, ordered_list_from_set
+from scipy import ndimage as nd
 
 
 def to_target(method):
