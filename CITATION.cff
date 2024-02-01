@@ -1,0 +1,26 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: brainglobe-space
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Luigi
+    family-names: Petrucco
+  - given-names: BrainGlobe
+    family-names: Developers
+    email: hello@brainglobe.info
+repository-code: >-
+  https://github.com/brainglobe/brainglobe-space
+url: 'https://brainglobe.info'
+abstract: >-
+  Anatomical space conventions made easy. brainglobe-space
+  provides a neat way of defining an anatomical space, and
+  of operating stacks and point transformations between
+  spaces.
+license: BSD-3-Clause
+date-released: '2024-01-24'
+year: 2024
