@@ -30,6 +30,7 @@ jobs:
       - uses: neuroinformatics-unit/actions/lint@v2
 
   test:
+    needs: [linting, manifest]
     name: Run package tests
     runs-on: ${{ matrix.os }}
     strategy:
