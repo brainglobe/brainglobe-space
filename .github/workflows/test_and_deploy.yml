@@ -47,17 +47,20 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-  build_sdist_wheel:
-    name: Build source distribution and wheel
-    needs: [test, linting, manifest]
+  build_sdist_wheels:
+    name: Build source distribution
+    needs: [test]
     if: github.event_name == 'push' && github.ref_type == 'tag'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: artifact
-          path: dist
-      - uses: pypa/gh-action-pypi-publish@v1.5.0
-        with:
-          user: __token__
-          password: ${{ secrets.TWINE_API_KEY }}
+    - uses: neuroinformatics-unit/actions/build_sdist_wheels@v1
+
+
+  upload_all:
+    name: Publish build distributions
+    needs: [build_sdist_wheels]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: neuroinformatics-unit/actions/upload_pypi@v2
+      with:
+        secret-pypi-key: ${{ secrets.TWINE_API_KEY }}
