@@ -1,10 +1,18 @@
 [![Python Version](https://img.shields.io/pypi/pyversions/brainglobe-space.svg)](https://pypi.org/project/brainglobe-space)
 [![PyPI](https://img.shields.io/pypi/v/brainglobe-space.svg)](https://pypi.org/project/brainglobe-space)
-[![Build Status](https://travis-ci.com/brainglobe/brainglobe-space.svg?branch=master)](https://travis-ci.com/brainglobe/brainglobe-space)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Coverage Status](https://coveralls.io/repos/github/brainglobe/brainglobe-space/badge.svg)](https://coveralls.io/github/brainglobe/brainglobe-space)
+[![Downloads](https://pepy.tech/badge/brainglobe-space)](https://pepy.tech/project/brainglobe-space)
+[![Wheel](https://img.shields.io/pypi/wheel/brainglobe-space.svg)](https://pypi.org/project/brainglobe-space)
+[![Development Status](https://img.shields.io/pypi/status/brainglobe-space.svg)](https://github.com/brainglobe/brainglobe-space)
+[![Tests](https://img.shields.io/github/actions/workflow/status/brainglobe/brainglobe-space/test_and_deploy.yml?branch=main)](https://github.com/brainglobe/brainglobe-space/actions)
+[![codecov](https://codecov.io/gh/brainglobe/brainglobe-space/branch/main/graph/badge.svg?token=nx1lhNI7ox)](https://codecov.io/gh/brainglobe/brainglobe-space)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4552537.svg)](https://doi.org/10.5281/zenodo.4552537)
+[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![Contributions](https://img.shields.io/badge/Contributions-Welcome-brightgreen.svg)](https://brainglobe.info/community/developers/index.html)
+[![Twitter](https://img.shields.io/twitter/follow/brain_globe?style=social)](https://twitter.com/brain_globe)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![DOI](https://zenodo.org/badge/267813717.svg)](https://zenodo.org/doi/10.5281/zenodo.4552536)
+
 
 # brainglobe-space
 
