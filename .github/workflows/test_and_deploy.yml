@@ -46,7 +46,7 @@ jobs:
           python-version: "3.9"
 
     steps:
-      - uses: neuroinformatics-unit/actions/test@v1
+      - uses: neuroinformatics-unit/actions/test@v2
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -56,7 +56,7 @@ jobs:
     if: github.event_name == 'push' && github.ref_type == 'tag'
     runs-on: ubuntu-latest
     steps:
-    - uses: neuroinformatics-unit/actions/build_sdist_wheels@v1
+    - uses: neuroinformatics-unit/actions/build_sdist_wheels@v2
 
 
   upload_all:
