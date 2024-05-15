@@ -22,7 +22,7 @@ Working with anatomical images, one often encounters the problem of matching the
 
 `brainglobe-space` provides a neat way of defining an anatomical space, and of operating stacks and point transformations between spaces.
 
-If you use `brainglobe-space` for your analyses, please cite its [Zenodo DOI](https://zenodo.org/record/4552537#.YDAFzi1Q2Rs!) <https://zenodo.org/record/4552537#.YDAFzi1Q2Rs!>
+If you use `brainglobe-space` for your analyses, please cite its [Zenodo DOI](https://doi.org/10.5281/zenodo.11193160).
 
 ## Installation
 
