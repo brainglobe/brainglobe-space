@@ -136,3 +136,9 @@ for i, (plane, labels) in enumerate(zip(sc.sections, sc.axis_labels)):
 ## Contributing
 
 Contributions are very welcome. Please see the [developers guide](https://brainglobe.info/developers/index.html).
+
+## Citation
+
+If you find brainglobe-space useful, please cite the following DOI:
+
+>Petrucco, L., & BrainGlobe Developers. (2024). brainglobe-space. Zenodo. https://zenodo.org/doi/10.5281/zenodo.4552536
