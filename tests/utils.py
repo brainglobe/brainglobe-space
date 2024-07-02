@@ -2,8 +2,6 @@ import numpy as np
 
 from brainglobe_space import AnatomicalSpace
 
-char_add = np.core.defchararray.add
-
 
 def create_label_array(origin, half_shape):
     """Create stack with string labels marking regions for testing.
@@ -40,4 +38,4 @@ def create_label_array(origin, half_shape):
 
     x, y, z = np.meshgrid(*arrays, indexing="ij")
 
-    return char_add(char_add(x, y), z)
+    return np.char.add(np.char.add(x, y), z)
