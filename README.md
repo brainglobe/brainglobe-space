@@ -22,8 +22,6 @@ Working with anatomical images, one often encounters the problem of matching the
 
 `brainglobe-space` provides a neat way of defining an anatomical space, and of operating stacks and point transformations between spaces.
 
-If you use `brainglobe-space` for your analyses, please cite its [Zenodo DOI](https://doi.org/10.5281/zenodo.11193160).
-
 ## Installation
 
 You can install `brainglobe-space` with:
@@ -133,9 +131,8 @@ for i, (plane, labels) in enumerate(zip(sc.sections, sc.axis_labels)):
 
 ![Projection illustrations](/docs/img/projections.png)
 
-## Contributing
-
-Contributions are very welcome. Please see the [developers guide](https://brainglobe.info/developers/index.html).
+## Seeking help or contributing
+We are always happy to help users of our tools, and welcome any contributions. If you would like to get in contact with us for any reason, please see the [contact page of our website](https://brainglobe.info/contact.html).
 
 ## Citation
 
