@@ -13,7 +13,7 @@ def to_target(method):
     @wraps(method)
     def decorated(spaceconv_instance, space_description, *args, **kwargs):
         # isinstance(..., AnatomicalSpace) here would fail, so:
-        if not type(space_description) == type(spaceconv_instance):
+        if type(space_description) is not type(spaceconv_instance):
             # Generate description if input was not one:
             sc_args = {
                 k: kwargs.pop(k)
