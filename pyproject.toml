@@ -9,11 +9,11 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = ["numpy", "scipy"]
 dynamic = ["version"]
 
@@ -39,7 +39,7 @@ include = ["brainglobe_space*"]
 filterwarnings = ["error"]
 
 [tool.black]
-target-version = ['py310','py311', 'py312']
+target-version = ['py311','py312', 'py313']
 skip-string-normalization = false
 line-length = 79
 
@@ -52,13 +52,13 @@ fix = true
 [tool.tox]
 legacy_tox_ini = """
 [tox]
-envlist = py{310,311,312}
+envlist = py{311,312,313}
 
 [gh-actions]
 python =
-    3.10: py310
     3.11: py311
     3.12: py312
+    3.13: py313
 
 [testenv]
 extras =
