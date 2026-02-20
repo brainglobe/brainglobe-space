@@ -12,7 +12,11 @@ def to_target(method):
 
     @wraps(method)
     def decorated(
-        spaceconv_instance, space_description, *args, check_rigid=True, **kwargs
+        spaceconv_instance,
+        space_description,
+        *args,
+        check_rigid=True,
+        **kwargs,
     ):
         # isinstance(..., AnatomicalSpace) here would fail, so:
         if type(space_description) is not type(spaceconv_instance):
