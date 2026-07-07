@@ -1,5 +1,6 @@
 [![Docs](https://img.shields.io/badge/Docs-brainglobe--space-blue)](https://brainglobe.info/documentation/index.html)
 [![Get in Touch](https://img.shields.io/badge/Get%20in%20Touch-BrainGlobe-blue)](https://brainglobe.info/contact.html)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4552536.svg)](https://doi.org/10.5281/zenodo.4552536)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![Tests](https://github.com/brainglobe/brainglobe-space/actions/workflows/test_and_deploy.yml/badge.svg)](https://github.com/brainglobe/brainglobe-space/actions/workflows/test_and_deploy.yml)
 [![Codecov](https://codecov.io/gh/brainglobe/brainglobe-space/graph/badge.svg?token=nx1lhNI7ox)](https://codecov.io/gh/brainglobe/brainglobe-space)
