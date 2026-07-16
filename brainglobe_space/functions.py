@@ -2,7 +2,7 @@ from brainglobe_space.core import AnatomicalSpace
 
 
 # TODO convert to a smarter way to generate those parsing class' methods:
-def map_to(source, target):
+def map_to(source, target, check_rigid=True):
     """Find axes reordering and flips required to go to
     target space convention.
 
@@ -12,6 +12,9 @@ def map_to(source, target):
         Source space origin.
     target : str
         Target space origin.
+    check_rigid : bool, optional
+        If True (default), raise an error if the transformation is not
+        rigid (i.e. involves a flip).
 
     Returns
     -------
@@ -21,10 +24,10 @@ def map_to(source, target):
         Sequence of flips to move to target space (in target axis order).
 
     """
-    return AnatomicalSpace(source).map_to(target)
+    return AnatomicalSpace(source).map_to(target, check_rigid=check_rigid)
 
 
-def map_stack_to(source, target, stack, copy=False):
+def map_stack_to(source, target, stack, copy=False, check_rigid=True):
     """Transpose and flip stack to move it to target space convention.
 
     Parameters
@@ -37,15 +40,20 @@ def map_stack_to(source, target, stack, copy=False):
         Stack to map from space convention a to space convention b
     copy : bool, optional
         If true, stack is copied.
+    check_rigid : bool, optional
+        If True (default), raise an error if the transformation is not
+        rigid (i.e. involves a flip).
 
     Returns
     -------
 
     """
-    return AnatomicalSpace(source).map_stack_to(target, stack, copy=False)
+    return AnatomicalSpace(source).map_stack_to(
+        target, stack, copy=False, check_rigid=check_rigid
+    )
 
 
-def transformation_matrix_to(source, target, shape=None):
+def transformation_matrix_to(source, target, shape=None, check_rigid=True):
     """Find transformation matrix going to target space convention.
 
     Parameters
@@ -56,15 +64,20 @@ def transformation_matrix_to(source, target, shape=None):
         Target space origin.
     shape : tuple, optional
         Must be passed if flips are required.
+    check_rigid : bool, optional
+        If True (default), raise an error if the transformation is not
+        rigid (i.e. involves a flip).
 
     Returns
     -------
 
     """
-    return AnatomicalSpace(source, shape).transformation_matrix_to(target)
+    return AnatomicalSpace(source, shape).transformation_matrix_to(
+        target, check_rigid=check_rigid
+    )
 
 
-def transform_points_to(source, target, points, shape=None):
+def transform_points_to(source, target, points, shape=None, check_rigid=True):
     """Map points to target space convention.
 
     Parameters
@@ -77,10 +90,15 @@ def transform_points_to(source, target, points, shape=None):
         Array with the points to be mapped.
     shape : tuple, optional
         Must be passed if flips are required.
+    check_rigid : bool, optional
+        If True (default), raise an error if the transformation is not
+        rigid (i.e. involves a flip).
 
     Returns
     -------
     (n, 3) numpy array
         Array with the transformed points.
     """
-    return AnatomicalSpace(source, shape).map_points_to(target, points)
+    return AnatomicalSpace(source, shape).map_points_to(
+        target, points, check_rigid=check_rigid
+    )

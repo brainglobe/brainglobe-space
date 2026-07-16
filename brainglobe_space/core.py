@@ -11,7 +11,13 @@ def to_target(method):
     """Decorator for bypassing AnatomicalSpace creation."""
 
     @wraps(method)
-    def decorated(spaceconv_instance, space_description, *args, **kwargs):
+    def decorated(
+        spaceconv_instance,
+        space_description,
+        *args,
+        check_rigid=True,
+        **kwargs,
+    ):
         # isinstance(..., AnatomicalSpace) here would fail, so:
         if type(space_description) is not type(spaceconv_instance):
             # Generate description if input was not one:
@@ -22,7 +28,13 @@ def to_target(method):
             }
             space_description = AnatomicalSpace(space_description, **sc_args)
 
-        return method(spaceconv_instance, space_description, *args, **kwargs)
+        return method(
+            spaceconv_instance,
+            space_description,
+            *args,
+            check_rigid=check_rigid,
+            **kwargs,
+        )
 
     return decorated
 
@@ -161,7 +173,7 @@ class AnatomicalSpace:
         return self.axes_order.index(axis)
 
     @to_target
-    def map_to(self, target):
+    def map_to(self, target, check_rigid=True):
         """Find axes reordering, flips, ratios and offsets required to go to
         target space convention.
         The order of flips, ratios and offsets is the one of the target space!
@@ -182,6 +194,30 @@ class AnatomicalSpace:
         tuple
             Offsets to move target space (in target axis order and resolution).
 
+        """
+        return self._map_to(target, check_rigid=check_rigid)
+
+    def _map_to(self, target, check_rigid=True):
+        """Internal map_to implementation with check_rigid parameter.
+
+        Parameters
+        ----------
+        target : AnatomicalSpace object
+            Target space convention.
+        check_rigid : bool, optional
+            If True (default), raise an error if the transformation is not
+            rigid (i.e. involves a flip).
+
+        Returns
+        -------
+        tuple
+            Axes order to move to target space.
+        tuple
+            Sequence of flips to move to target space (in target axis order).
+        tuple
+            Scale factors to move target space (in target axis order).
+        tuple
+            Offsets to move target space (in target axis order and resolution).
         """
 
         # Get order of matching axes:
@@ -216,11 +252,32 @@ class AnatomicalSpace:
         else:
             offsets = (0, 0, 0)
 
+        # Check for non-rigid transformations:
+        if check_rigid:
+            # Construct the 3x3 permutation/flip matrix
+            m = np.zeros((3, 3))
+            for ti, si in enumerate(order):
+                m[ti, si] = -1 if flips[ti] else 1
+
+            if np.linalg.det(m) < 0:
+                raise ValueError(
+                    f"Transformation from {self.origin_string} to "
+                    f"{target.origin_string} is non-rigid (it involves a "
+                    f"flip). This can be bypassed by passing "
+                    f"`check_rigid=False` to the transformation method."
+                )
+
         return order, flips, scales, offsets
 
     @to_target
     def map_stack_to(
-        self, target, stack, copy=False, to_target_shape=False, interp_order=3
+        self,
+        target,
+        stack,
+        copy=False,
+        to_target_shape=False,
+        interp_order=3,
+        check_rigid=True,
     ):
         """Transpose and flip stack to move it to target space convention.
 
@@ -245,7 +302,9 @@ class AnatomicalSpace:
         """
 
         # Find order swapping and flips:
-        order, flips, scales, offsets = self.map_to(target)
+        order, flips, scales, offsets = self._map_to(
+            target, check_rigid=check_rigid
+        )
 
         # If we want to work on a copy, create:
         if copy:
@@ -289,7 +348,9 @@ class AnatomicalSpace:
         return stack
 
     @to_target
-    def transformation_matrix_to(self, target, infer_source_shape=False):
+    def transformation_matrix_to(
+        self, target, infer_source_shape=False, check_rigid=True
+    ):
         """Find transformation matrix going to target space convention.
 
         Parameters
@@ -313,7 +374,9 @@ class AnatomicalSpace:
             shape = target.map_stack_to(self, stack, interp_order=0).shape
 
         # Find axes order and flips:
-        order, flips, scales, offsets = self.map_to(target)
+        order, flips, scales, offsets = self._map_to(
+            target, check_rigid=check_rigid
+        )
 
         # Instantiate transformation matrix:
         transformation_mat = np.zeros((4, 4))
@@ -340,7 +403,9 @@ class AnatomicalSpace:
         return transformation_mat
 
     @to_target
-    def map_points_to(self, target, pts, infer_source_shape=False):
+    def map_points_to(
+        self, target, pts, infer_source_shape=False, check_rigid=True
+    ):
         """Map points to target space convention.
         Parameters
         ----------
@@ -362,7 +427,7 @@ class AnatomicalSpace:
         if len(pts.shape) == 1:
             pts = pts[np.newaxis, :]
         transformation_mat = self.transformation_matrix_to(
-            target, infer_source_shape
+            target, infer_source_shape, check_rigid=check_rigid
         )
 
         # A column of zeros is required for the matrix multiplication:

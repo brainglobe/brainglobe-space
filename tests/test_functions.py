@@ -17,20 +17,26 @@ valid_origins = ["asl", "ipl", "pls"]
 def test_function_consistency(src_o, tgt_o):
     shape = (15, 5, 10)
     stack = np.random.rand(*shape)
-    assert map_to(src_o, tgt_o) == AnatomicalSpace(src_o, shape).map_to(tgt_o)
+    assert map_to(src_o, tgt_o, check_rigid=False) == AnatomicalSpace(
+        src_o, shape
+    ).map_to(tgt_o, check_rigid=False)
 
     assert np.allclose(
-        map_stack_to(src_o, tgt_o, stack),
-        AnatomicalSpace(src_o).map_stack_to(tgt_o, stack),
+        map_stack_to(src_o, tgt_o, stack, check_rigid=False),
+        AnatomicalSpace(src_o).map_stack_to(tgt_o, stack, check_rigid=False),
     )
 
     assert np.allclose(
-        transformation_matrix_to(src_o, tgt_o, shape=shape),
-        AnatomicalSpace(src_o, shape).transformation_matrix_to(tgt_o),
+        transformation_matrix_to(src_o, tgt_o, shape=shape, check_rigid=False),
+        AnatomicalSpace(src_o, shape).transformation_matrix_to(
+            tgt_o, check_rigid=False
+        ),
     )
 
     pts = np.array([[1, s - 1, s + 1, s * 2 - 1] for s in shape]).T
     assert np.allclose(
-        transform_points_to(src_o, tgt_o, pts, shape=shape),
-        AnatomicalSpace(src_o, shape).map_points_to(tgt_o, pts),
+        transform_points_to(src_o, tgt_o, pts, shape=shape, check_rigid=False),
+        AnatomicalSpace(src_o, shape).map_points_to(
+            tgt_o, pts, check_rigid=False
+        ),
     )
