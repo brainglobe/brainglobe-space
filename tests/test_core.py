@@ -110,7 +110,9 @@ def test_stack_flips(src_o, tgt_o, src_shape, tgt_shape):
     # Test both mapping to AnatomicalSpace obj and origin with decorator:
     for target_space in [tgt_o, AnatomicalSpace(tgt_o)]:
         # Check all corners of the mapped stack:
-        mapped_stack = source_space.map_stack_to(target_space, source_stack)
+        mapped_stack = source_space.map_stack_to(
+            target_space, source_stack, check_rigid=False
+        )
         for indexes in itertools.product([0, -1], repeat=3):
             assert set(mapped_stack[indexes]) == set(target_stack[indexes])
 
@@ -149,8 +151,12 @@ def test_point_transform(src_o, tgt_o, src_shape, tgt_shape):
         source_pts = np.array(list(itertools.product(*grid_positions)))
 
         # Map points and stack to target space:
-        mapped_pts = source_space.map_points_to(target_space, source_pts)
-        mapped_stack = source_space.map_stack_to(target_space, source_stack)
+        mapped_pts = source_space.map_points_to(
+            target_space, source_pts, check_rigid=False
+        )
+        mapped_stack = source_space.map_stack_to(
+            target_space, source_stack, check_rigid=False
+        )
 
         # Check that point coordinates keep the same values:
         for p_source, p_mapped in zip(source_pts, mapped_pts):
@@ -162,7 +168,9 @@ def test_point_transform(src_o, tgt_o, src_shape, tgt_shape):
 def test_point_transform_fail():
     s = AnatomicalSpace("asl")
     with pytest.raises(TypeError) as error:
-        s.map_points_to("psl", np.array([[0, 1, 2], [0, 1, 2]]))
+        s.map_points_to(
+            "psl", np.array([[0, 1, 2], [0, 1, 2]]), check_rigid=False
+        )
     assert "The source space should have a shape" in str(error)
 
 
@@ -353,7 +361,9 @@ def test_points_mapping():
     target_space = AnatomicalSpace(
         "asl", shape=(100, 100, 100), resolution=(10, 10, 10)
     )
-    mapped_points = source_space.map_points_to(target_space, points)
+    mapped_points = source_space.map_points_to(
+        target_space, points, check_rigid=False
+    )
 
     assert np.allclose(
         mapped_points,
